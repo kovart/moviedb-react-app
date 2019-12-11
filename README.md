@@ -1,68 +1,26 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React client for The Movie Database API
 
-## Available Scripts
+## Task
+Основная задача тестового не узнать как сильно вы знаете React, а посмотреть насколько хорошо вы сможете разобраться с новыми технологиями в относительно короткий срок. В идеале, на него нужно потратить не более 3 дней. А так - делайте сколько делается, пока мы не закроем вакансию ;)
 
-In the project directory, you can run:
+Описание
+Нужно написать одностраничное приложения для просмотра фильмов с помощью The Movie Database API.
 
-### `npm start`
+При открытии приложения, должен отображаться список популярных фильмов с пагинацией или динамической подгрузкой (на выбор). Также на странице должно быть поле для поиска. Когда ты вводишь туда какой-то текст, должны отобразиться фильмы которые ему соответствуют. Для каждого фильма в списке должен отображаться список жанров (названий жанров, не айдишек), к которым он принадлежит.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+При клике на карточку с фильмом, должна быть показана страница с детальной информацией об этом фильме и списком рекоммендованых или похожих (можно и то, и то) фильмов к нему.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Также реализуйте возможность добавлять фильмы в избранное как со списка, так и на странице с отдельным фильмом. Список таких фильмов сохраняйте локально (localStorage, например). Предусмотрите просмотр списка с избранными фильмами где-то в приложении и удаление из избранного. Также предусмотрите отображение на карточке с фильмом и его странице информации о том, что этот фильм добавлен в избранное.
 
-### `npm test`
+Важно!
+Вы можете использовать готовые компоненты и/или утилиты. Например, компонент для ленивой подгрузки или утилиту для синхронизации с localStorage. Еще, есть готовые библиотеки компонентов, которые помогут ускорить разработку.
+Внешний вид приложения тоже оценивается. Попробуйте продумать интерфейс пользователя и его взаимодействие с приложением / UX
+По желанию, можете покрыть код необходимым набором тестов
+Используйте современный JavaScript
+Добавьте к решению инструкции по запуску проекта и краткое описание решения
+Выложите куда-то рабочее приложение, например, на GitHub Pages или Heroku
+По технологиям – на свое усмотрение, из обязательного только React.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Task source 
+https://gist.github.com/krambertech/ecb3890824fd7ada0f4ec1ff55125758
