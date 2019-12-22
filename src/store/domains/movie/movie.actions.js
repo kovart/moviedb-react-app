@@ -1,0 +1,66 @@
+import {MOVIEDB_MIDDLEWARE} from "../../middlewares/moviedb-api"
+import {
+    MOVIE_FETCH_FAIL,
+    MOVIE_FETCH_REQUEST,
+    MOVIE_FETCH_SUCCESS, SIMILAR_MOVIES_FETCH_FAIL,
+    SIMILAR_MOVIES_FETCH_REQUEST,
+    SIMILAR_MOVIES_FETCH_SUCCESS
+} from "./movie.types"
+import {ADD_ERROR} from "../ui/ui.types"
+
+export function fetchMovie(id) {
+    return {
+        type: "FETCH_MOVIE",
+        payload: null,
+        meta: {
+            target: MOVIEDB_MIDDLEWARE,
+            method: "GET",
+            url: "/movie/" + id,
+            params: null,
+            handlers: {
+                request: MOVIE_FETCH_REQUEST,
+                success: [MOVIE_FETCH_SUCCESS, function (dispatch) {
+                    dispatch(fetchSimilarMovies(id))
+                    dispatch(fetchRecommendedMovies(id))
+                }],
+                fail: [ADD_ERROR, MOVIE_FETCH_FAIL]
+            }
+        }
+    }
+}
+
+export function fetchSimilarMovies(movieId, page = 1) {
+    return {
+        type: "FETCH_SIMILAR_MOVIES",
+        payload: null,
+        meta: {
+            target: MOVIEDB_MIDDLEWARE,
+            method: "GET",
+            url: `movie/${movieId}/similar`,
+            params: {page},
+            handlers: {
+                request: SIMILAR_MOVIES_FETCH_REQUEST,
+                success: SIMILAR_MOVIES_FETCH_SUCCESS,
+                fail: [ADD_ERROR, SIMILAR_MOVIES_FETCH_FAIL]
+            }
+        }
+    }
+}
+
+export function fetchRecommendedMovies(movieId, page = 1) {
+    return {
+        type: "FETCH_RECOMMENDED_MOVIES",
+        payload: null,
+        meta: {
+            target: MOVIEDB_MIDDLEWARE,
+            method: "GET",
+            url: `movie/${movieId}/recommendations`,
+            params: {page},
+            handlers: {
+                request: SIMILAR_MOVIES_FETCH_REQUEST,
+                success: SIMILAR_MOVIES_FETCH_SUCCESS,
+                fail: [ADD_ERROR, SIMILAR_MOVIES_FETCH_FAIL]
+            }
+        }
+    }
+}
