@@ -1,4 +1,8 @@
-import {POPULAR_MOVIES_FETCH_SUCCESS, TOP_RATED_MOVIES_FETCH_SUCCESS} from "../home/home.types"
+import {
+    POPULAR_MOVIES_FETCH_SUCCESS,
+    TOP_RATED_MOVIES_FETCH_SUCCESS,
+    UPCOMING_MOVIES_FETCH_SUCCESS
+} from "../home/home.types"
 import {GENRES_FETCH_SUCCESS} from "../common/common.types"
 import {RECOMMENDED_MOVIES_FETCH_SUCCESS, SIMILAR_MOVIES_FETCH_SUCCESS} from "../movie/movie.types"
 import {SEARCH_SUCCESS} from "../search/search.types"
@@ -19,6 +23,7 @@ export function entitiesReducer(state = initialState, action) {
             return {...state, genresById: genresById}
         case POPULAR_MOVIES_FETCH_SUCCESS:
         case TOP_RATED_MOVIES_FETCH_SUCCESS:
+        case UPCOMING_MOVIES_FETCH_SUCCESS:
         case SIMILAR_MOVIES_FETCH_SUCCESS:
         case RECOMMENDED_MOVIES_FETCH_SUCCESS:
         case SEARCH_SUCCESS:
@@ -39,7 +44,12 @@ function prepareMovie(raw = {}) {
         genreIds: raw.genre_ids,
         date: raw.release_date,
         voteAverage: raw.vote_average,
-        posterImageUrl: raw.poster_path,
-        backdropImageUrl: raw.backdrop_path,
+        posterImageUrl: prepareImage(raw.poster_path),
+        backdropImageUrl: prepareImage(raw.backdrop_path),
     }
+}
+
+function prepareImage(url, size='w500') {
+    // size = 'original'
+    return `https://image.tmdb.org/t/p/${size}${url}`
 }

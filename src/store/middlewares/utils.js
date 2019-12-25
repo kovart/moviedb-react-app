@@ -21,7 +21,12 @@ export function dispatchAction(action, payload = null, next) {
     }
 }
 
-//
+/**
+ * Allows us to manage action executing in a Middleware.
+ *
+ * @returns {{cancel(): void, , done(): void, isCancelled: boolean, subscribe(string, function): void, unsubscribe(string, function): void, id: string, _handlers: {cancel: [], done: []}, isDone: boolean}}
+ * @constructor
+ */
 export function ActionTask() {
     return {
         id: "TASK-" + generateId(),

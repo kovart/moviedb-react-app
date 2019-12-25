@@ -40,18 +40,18 @@ const MiddlewareName = 'MovieDB Api Middleware'
 
 export function MovieDbApiMiddleware(debug = false) {
     return store => next => async action => {
-        const {payload, meta} = action
-        const {url, method, handlers, task} = meta
-        const {params} = payload
+        const {type, payload, meta} = action
 
         if (!meta || meta.target !== MOVIEDB_MIDDLEWARE) return next(action)
         if (!meta.handlers || !Object.keys(meta.handlers).length)
             return console.error(`action must contain non empty 'meta' object with at least one handler`, action)
 
-        const log = (msg, data) => console.log(`[${MiddlewareName}] [${action.type}]${task ? ` [${task.id}]` : ""}: ${msg}`, ...data)
+        const {url, method, params, handlers} = meta
+        const task = meta.task || {isCancelled: false, isDone: false, isDummy: true}
+        const log = (msg, data) => console.log(`[${MiddlewareName}] [${type}]${task ? ` [${task.id}]` : ""}: ${msg}`, ...data)
 
         const cancelToken = AxiosCancelToken.source()
-        task && task.subscribe(ActionTask.events.CANCEL, function () {
+        !task.isDummy && task.subscribe(ActionTask.events.CANCEL, function () {
             cancelToken.cancel()
             if (debug) log(`Action has been canceled`)
             if (handlers.cancel) dispatchAction(handlers.cancel, null, store.dispatch)
@@ -70,7 +70,7 @@ export function MovieDbApiMiddleware(debug = false) {
                 console.error('Unknown request method: ' + method, action)
                 return next(action)
             }
-            if (!task.isCancelled && handlers.success) {
+            if (handlers.success && !task.isCancelled) {
                 if (debug) log(`Success handling`)
                 dispatchAction(handlers.success, response.data, store.dispatch)
             }
@@ -84,7 +84,7 @@ export function MovieDbApiMiddleware(debug = false) {
                 }
             }
         } finally {
-            if (task && !task.isCancelled) task.done()
+            if (!task.isDummy && !task.isCancelled) task.done()
             // TODO Should we make the task done if it is cancelled?
             // if (task) task.done()
         }
@@ -94,10 +94,11 @@ export function MovieDbApiMiddleware(debug = false) {
 
 
 function get(url, params = {}, cancelToken) {
-    return axios.get({
+    return axios({
         baseURL: "https://api.themoviedb.org/3/",
         url: url,
         method: "get",
+        cancelToken: cancelToken.token,
         params: Object.assign({},
             {
                 api_key: API_KEY,

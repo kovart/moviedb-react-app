@@ -1,4 +1,4 @@
-const universalMessage = "Something went wrong :("
+const universalMessage = "Something went wrong"
 
 export function prepareError(error) {
     if(typeof error === 'string') return error

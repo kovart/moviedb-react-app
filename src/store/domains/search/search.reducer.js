@@ -7,7 +7,7 @@ const initialSearchState = {
 }
 
 // sub-reducer
-export function searchReducer(componentName, state = initialSearchState, action) {
+export function searchReducer(state = initialSearchState, action) {
     const {type, payload} = action
     switch (type) {
         case SEARCH_REQUEST:

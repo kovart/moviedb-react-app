@@ -12,8 +12,8 @@ const initialState = {
     isFetched: false,
     // ...movie data
 
-    similarMovies: moviesFetchReducer("SIMILAR_MOVIES", null, null),
-    recommendedMovies: moviesFetchReducer("RECOMMENDED_MOVIES", null, null),
+    similarMovies: moviesFetchReducer("SIMILAR_MOVIES", undefined, {}),
+    recommendedMovies: moviesFetchReducer("RECOMMENDED_MOVIES", undefined, {}),
 }
 
 export function movieReducer(state = initialState, action) {

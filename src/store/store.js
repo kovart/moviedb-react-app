@@ -9,9 +9,10 @@ import {userReducer} from "./domains/user/user.reducer"
 import {movieReducer} from "./domains/movie/movie.reducer"
 import {homeReducer} from "./domains/home/home.reducer"
 import {entitiesReducer} from "./domains/entities/entities.reducer"
+import {searchReducer} from "./domains/search/search.reducer"
 
 const getMiddleware = function () {
-    return process.node.NODE_ENV === 'production' ?
+    return process.env.NODE_ENV === 'production' ?
         applyMiddleware(MovieDbApiMiddleware()) :
         applyMiddleware(MovieDbApiMiddleware(), createLogger())
 }
@@ -24,8 +25,9 @@ const rootReducer = combineReducers({
     user: userReducer,
     movie: movieReducer,
     home: homeReducer,
+    search: searchReducer,
     entities: entitiesReducer,
     router: connectRouter(history)
 })
 
-export const store = createStore(rootReducer, null, getMiddleware())
+export const store = createStore(rootReducer, getMiddleware())

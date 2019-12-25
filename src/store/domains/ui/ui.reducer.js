@@ -1,8 +1,6 @@
 import {ADD_ERROR, REMOVE_ERROR} from "./ui.types"
 import {prepareError} from "./ui.utils"
-
-let globalId = 0
-const generateId = () => globalId++
+import {generateId} from "../../../utils/common"
 
 const initialState = {
     errors: [],
@@ -12,7 +10,12 @@ export function uiReducer(state = initialState, action) {
     const {type, payload} = action
     switch (type) {
         case ADD_ERROR:
-            const error = {message: prepareError(payload.error), id: generateId()}
+            console.error(payload.error)
+            const error = {
+                id: generateId(),
+                message: prepareError(payload.error),
+                date: new Date()
+            }
             return {...state, errors: [...state.errors, error]}
         case REMOVE_ERROR:
             const {error: {id}} = payload

@@ -1,4 +1,7 @@
 import {
+    UPCOMING_MOVIES_FETCH_FAIL,
+    UPCOMING_MOVIES_FETCH_REQUEST,
+    UPCOMING_MOVIES_FETCH_SUCCESS,
     POPULAR_MOVIES_FETCH_FAIL,
     POPULAR_MOVIES_FETCH_REQUEST,
     POPULAR_MOVIES_FETCH_SUCCESS, TOP_RATED_MOVIES_FETCH_FAIL,
@@ -7,8 +10,9 @@ import {
 import {moviesFetchReducer} from "../../shared"
 
 const initialState = {
-    popularMovies: moviesFetchReducer("POPULAR_MOVIES", null, null),
-    topRatedMovies: moviesFetchReducer("TOP_RATED_MOVIES", null, null)
+    popularMovies: moviesFetchReducer("POPULAR_MOVIES", undefined, {}),
+    topRatedMovies: moviesFetchReducer("TOP_RATED_MOVIES", undefined, {}),
+    upcomingMovies: moviesFetchReducer("UPCOMING_MOVIES", undefined, {}),
 }
 
 export function homeReducer(state = initialState, action) {
@@ -27,6 +31,13 @@ export function homeReducer(state = initialState, action) {
             return {
                 ...state,
                 topRatedMovies: moviesFetchReducer("TOP_RATED_MOVIES", state.topRatedMovies, action)
+            }
+        case UPCOMING_MOVIES_FETCH_REQUEST:
+        case UPCOMING_MOVIES_FETCH_SUCCESS:
+        case UPCOMING_MOVIES_FETCH_FAIL:
+            return {
+                ...state,
+                upcomingMovies: moviesFetchReducer("UPCOMING_MOVIES", state.upcomingMovies, action)
             }
         default:
             return state
