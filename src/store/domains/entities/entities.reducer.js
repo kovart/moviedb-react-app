@@ -42,7 +42,7 @@ function prepareMovie(raw = {}) {
         name: raw.title,
         overview: raw.overview,
         genreIds: raw.genre_ids,
-        date: raw.release_date,
+        date: new Date(raw.release_date),
         voteAverage: raw.vote_average,
         posterImageUrl: prepareImage(raw.poster_path),
         backdropImageUrl: prepareImage(raw.backdrop_path),
