@@ -1,4 +1,4 @@
-import {applyMiddleware, combineReducers, createStore} from 'redux'
+import {applyMiddleware, combineReducers, createStore, compose} from 'redux'
 import {createBrowserHistory} from 'history'
 import {MovieDbApiMiddleware} from "./middlewares/moviedb-api"
 import {createLogger} from "redux-logger"
@@ -30,4 +30,5 @@ const rootReducer = combineReducers({
     router: connectRouter(history)
 })
 
-export const store = createStore(rootReducer, getMiddleware())
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+export const store = createStore(rootReducer, composeEnhancers(getMiddleware()))
