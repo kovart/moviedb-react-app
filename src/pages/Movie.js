@@ -154,8 +154,8 @@ function Movie(props) {
                                 {crew.length && <React.Fragment>
                                     <h3 className={classes.subtitle}>Crew</h3>
                                     <Grid container spacing={3} component="ul" className={classes.crewList}>
-                                        {crew.slice(0, 4).map(person => (
-                                            <Grid item md={3} sm={6} component="li" key={person.id} style={{paddingRight: 16}}>
+                                        {crew.slice(0, 4).map((person, i) => (
+                                            <Grid item md={3} sm={6} component="li" key={i} style={{paddingRight: 16}}>
                                                 <Typography variant={"body2"} style={{fontWeight: 'bold'}}>{person.name}</Typography>
                                                 <Typography variant={"body2"}>{person.department}, {person.job}</Typography>
                                             </Grid>
