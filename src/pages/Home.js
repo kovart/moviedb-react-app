@@ -6,6 +6,7 @@ import MovieBrowser from "../components/MovieBrowser"
 import {makeStyles} from "@material-ui/core/styles"
 import {connect} from "react-redux"
 import {fetchPopularMovies, fetchTopRatedMovies, fetchUpcomingMovies} from "../store/domains/home/home.actions"
+import {getMovie} from "../store/utils"
 
 const useStyles = makeStyles(theme => ({
     movieList: {
@@ -58,11 +59,7 @@ function Home(props) {
         }
     }
     const category = categoryMap[categoryName]
-    const movies = isAppReady ? category.movies.ids.map(id => {
-        const movie = entities.moviesById[id]
-        movie.genres = movie.genreIds.map(id => entities.genresById[id].name)
-        return movie
-    }) : []
+    const movies = isAppReady ? category.movies.ids.map(id => getMovie(id, entities)) : []
 
     function loadMore() {
         if(category.movies.totalMovies === category.movies.ids.length) return
@@ -100,6 +97,7 @@ function Home(props) {
                 <main className={classes.movieList}>
                     <MovieBrowser
                         onLoadMore={loadMore}
+                        placeholdersAmount={10}
                         movies={movies}
                         isFetched={category.movies.isFetched}
                         isFetching={!isAppReady || category.movies.isFetching}
@@ -111,7 +109,7 @@ function Home(props) {
 
 function mapStateToProps(state) {
     return {
-        isAppReady: state.common.isGenresLoaded,
+        isAppReady: state.common.isAppReady,
 
         popularMovies: state.home.popularMovies,
         topRatedMovies: state.home.topRatedMovies,
