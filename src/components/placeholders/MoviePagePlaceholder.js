@@ -7,8 +7,10 @@ import {makeStyles} from "@material-ui/core/styles"
 const useStyles = makeStyles(theme => ({
     skeleton: {
         background: 'rgb(181, 181, 181)',
-        color: 'rgb(181, 181, 181)'
     },
+    icon: {
+        color: 'rgb(181, 181, 181)'
+    }
 }))
 
 function MoviePagePlaceholder() {
@@ -28,7 +30,7 @@ function MoviePagePlaceholder() {
                 <Skeleton variant="text" width={100} height={20} className={classes.skeleton}/>
                 <Skeleton variant="text" width={300} height={34} className={classes.skeleton}/>
                 <div>
-                    <Rating value={4} classes={{iconEmpty: classes.skeleton}} readOnly/>
+                    <Rating value={4} classes={{iconEmpty: classes.icon}} readOnly/>
                 </div>
                 {subtitle(50)}
                 {text(4)}
