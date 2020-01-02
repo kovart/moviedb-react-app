@@ -2,11 +2,14 @@ import {makeStyles} from "@material-ui/core/styles"
 import {Star as StarIcon} from '@material-ui/icons'
 import React from "react"
 import {Typography} from "@material-ui/core"
+import {Link} from "react-router-dom"
 
 const useStyles = makeStyles(theme => ({
     root: {
         position: "relative",
         boxShadow: "none",
+        textDecoration: 'none',
+        color: 'inherit'
     },
     image: {
         display: 'block',
@@ -58,7 +61,7 @@ const voteColors = {
     EXCELLENT: '#83d620'
 }
 
-function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl}) {
+function MovieCard({id, name, overview, genres, voteAverage, date, posterImageUrl}) {
     const classes = useStyles()
 
     let voteColor = voteColors.EXCELLENT
@@ -67,7 +70,7 @@ function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl}) 
     else if(voteAverage < 8) voteColor = voteColors.GOOD
 
     return (
-        <div className={classes.root}>
+        <Link className={classes.root} to={"/movie/"+id}>
             <img className={classes.image} src={posterImageUrl} alt={name}/>
             <div className={classes.details}>
                 <Typography variant={"h3"} className={classes.movieName}>{name}</Typography>
@@ -76,10 +79,10 @@ function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl}) 
                     {voteAverage}
                 </div>
                 <div className={classes.extraInfo}>
-                    {new Date(date).getFullYear()} • {genres.slice(0, 3).join(', ')}
+                    {new Date(date).getFullYear()} • {genres.length ? genres.slice(0, 3).join(', '): '-'}
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }
 

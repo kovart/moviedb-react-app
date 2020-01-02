@@ -1,6 +1,11 @@
 import React, {useEffect} from 'react'
-import CssBaseline from "@material-ui/core/CssBaseline"
 import {connect} from "react-redux"
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+} from "react-router-dom"
+import CssBaseline from "@material-ui/core/CssBaseline"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import {fetchGenres} from "./store/domains/common/common.actions"
 import {SnackbarProvider} from "notistack"
@@ -16,16 +21,19 @@ function App(props) {
         fetchGenres()
     }, [fetchGenres])
 
-
     return (
-        <SnackbarProvider autoHideDuration={30 * 1000}>
-            <CssBaseline/>
-            <Notifier/>
-            {isLoading && <LinearProgress style={{position: 'fixed', top: 0, width: '100%', zIndex: 9999}}/>}
-            <Navbar/>
-            {/*<Home />*/}
-            <Movie/>
-        </SnackbarProvider>
+        <Router>
+            <SnackbarProvider autoHideDuration={30 * 1000}>
+                <CssBaseline/>
+                <Notifier/>
+                {isLoading && <LinearProgress style={{position: 'fixed', top: 0, width: '100%', zIndex: 9999}}/>}
+                <Navbar/>
+                <Switch>
+                    <Route exact path="/" component={Home}/>
+                    <Route path="/movie/:id" component={Movie}/>
+                </Switch>
+            </SnackbarProvider>
+        </Router>
     );
 }
 

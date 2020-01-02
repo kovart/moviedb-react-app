@@ -40,6 +40,7 @@ export function entitiesReducer(state = initialState, action) {
 
 function prepareMovie(raw = {}) {
     return {
+        id: raw.id,
         name: raw.title,
         overview: raw.overview,
         genreIds: raw.genre_ids,

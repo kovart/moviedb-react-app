@@ -21,7 +21,7 @@ export function movieReducer(state = initialState, action) {
     const {type, payload} = action
     switch (type) {
         case MOVIE_FETCH_REQUEST:
-            return {...state, isFetched: false, isFetching: true}
+            return {...initialState, isFetching: true}
         case MOVIE_FETCH_FAIL:
             return {...state, isFetched: false, isFetching: false}
         case MOVIE_FETCH_SUCCESS:

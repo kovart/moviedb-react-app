@@ -10,6 +10,7 @@ import LazyLoad from 'react-lazyload'
 import {getMovie} from "../store/utils"
 import MovieBrowser from "../components/MovieBrowser"
 import MoviePagePlaceholder from "../components/placeholders/MoviePagePlaceholder"
+import {useParams} from "react-router"
 
 const useStyles = makeStyles(theme => ({
     movieContainer: {
@@ -78,9 +79,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Movie(props) {
+    const {id} = useParams()
     const {isAppReady, isFetched, isFetching} = props
     const {
-        id,
         title,
         genres,
         duration,
@@ -103,17 +104,8 @@ function Movie(props) {
 
     useEffect(function () {
         fetchMovie(id)
+        window.scrollTo({top: 0, left: 0})
     }, [id, fetchMovie])
-
-    function formatDate(date) {
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"]
-        return `${date.getDay()} ${monthNames[date.getMonth()]}, ${date.getFullYear()}`
-    }
-
-    function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
 
     return (
         <React.Fragment>
@@ -129,7 +121,7 @@ function Movie(props) {
                             </Grid>
                             <Grid item md={8} style={{color: 'white'}}>
                                 <div className={classes.releaseDate}>
-                                    {formatDate(releaseDate)} ({productionCountries.join(', ')})
+                                    {Utils.formatDate(releaseDate)} ({productionCountries.join(', ')})
                                 </div>
                                 <Typography variant={"h4"} style={{fontWeight: 'bold'}} component={"h1"}>
                                     {title}
@@ -148,7 +140,7 @@ function Movie(props) {
                                         <b>Duration:</b> {duration} min.
                                     </Typography>
                                     <Typography component={"div"}>
-                                        <b>Budget:</b> {budget ? '$' + numberWithCommas(budget) : '-'}
+                                        <b>Budget:</b> {budget ? '$' + Utils.numberWithCommas(budget) : '-'}
                                     </Typography>
                                 </div>
                                 {legend && <React.Fragment>
@@ -175,7 +167,7 @@ function Movie(props) {
                         <MoviePagePlaceholder/>}
                 </Container>
             </main>
-            <SecondBlock {...props}/>
+            <SecondBlock {...props} id={id}/>
         </React.Fragment>
     )
 }
@@ -242,14 +234,25 @@ function MovieList({isFetching, isFetched, movies = [], fetch}) {
     )
 }
 
+const Utils = {
+    formatDate(date) {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        return `${date.getDay()} ${monthNames[date.getMonth()]}, ${date.getFullYear()}`
+    },
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+}
 
 function mapStateToProps(state) {
     return {
         isAppReady: state.common.isAppReady,
-        ...state.movie,
-        // TODO remove this test variable
-        id: 111,
         entities: state.entities,
+
+        ...state.movie,
     }
 }
 
