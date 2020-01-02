@@ -13,6 +13,7 @@ import Notifier from "./components/Notifier"
 import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
 import Movie from "./pages/Movie"
+import Page404 from "./pages/Page404"
 
 function App(props) {
     const {isLoading, fetchGenres} = props
@@ -31,6 +32,7 @@ function App(props) {
                 <Switch>
                     <Route exact path="/" component={Home}/>
                     <Route path="/movie/:id" component={Movie}/>
+                    <Route component={Page404}/>
                 </Switch>
             </SnackbarProvider>
         </Router>
