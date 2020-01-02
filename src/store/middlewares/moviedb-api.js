@@ -48,7 +48,11 @@ export function MovieDbApiMiddleware(debug = false) {
 
         const {url, method, params, handlers} = meta
         const task = meta.task || {isCancelled: false, isDone: false, isDummy: true}
-        const log = (msg, data) => console.log(`[${MiddlewareName}] [${type}]${task ? ` [${task.id}]` : ""}: ${msg}`, ...data)
+        const log = (msg, ...data) => console.log(
+            `%c[${MiddlewareName}]`, 'font-weight: bold',
+            `[${type}]${!task.isDummy ? ` [${task.id}]` : ""}: ${msg}`,
+            ...data
+        )
 
         const cancelToken = AxiosCancelToken.source()
         !task.isDummy && task.subscribe(ActionTask.events.CANCEL, function () {
@@ -58,7 +62,7 @@ export function MovieDbApiMiddleware(debug = false) {
         })
 
         if (!task.isCancelled && handlers.request) {
-            if (debug) log(`Request handling`)
+            if (debug) log(`Request handling`, meta, payload)
             dispatchAction(handlers.request, null, store.dispatch)
         }
 
