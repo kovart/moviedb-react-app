@@ -6,6 +6,7 @@ import {
 import {GENRES_FETCH_SUCCESS} from "../common/common.types"
 import {RECOMMENDED_MOVIES_FETCH_SUCCESS, SIMILAR_MOVIES_FETCH_SUCCESS} from "../movie/movie.types"
 import {SEARCH_SUCCESS} from "../search/search.types"
+import {prepareImage} from "../../utils"
 
 const initialState = {
     moviesById: {},
@@ -18,7 +19,7 @@ export function entitiesReducer(state = initialState, action) {
         case GENRES_FETCH_SUCCESS:
             const genresById = {}
             for (let genre of payload.genres) {
-                genresById[genre.id] = genre
+                genresById[genre.id] = genre.name
             }
             return {...state, genresById: genresById}
         case POPULAR_MOVIES_FETCH_SUCCESS:
@@ -47,9 +48,4 @@ function prepareMovie(raw = {}) {
         posterImageUrl: prepareImage(raw.poster_path),
         backdropImageUrl: prepareImage(raw.backdrop_path),
     }
-}
-
-function prepareImage(url, size='w500') {
-    // size = 'original'
-    return `https://image.tmdb.org/t/p/${size}${url}`
 }

@@ -2,7 +2,11 @@ import {MOVIEDB_MIDDLEWARE} from "../../middlewares/moviedb-api"
 import {
     MOVIE_FETCH_FAIL,
     MOVIE_FETCH_REQUEST,
-    MOVIE_FETCH_SUCCESS, SIMILAR_MOVIES_FETCH_FAIL,
+    MOVIE_FETCH_SUCCESS,
+    RECOMMENDED_MOVIES_FETCH_FAIL,
+    RECOMMENDED_MOVIES_FETCH_REQUEST,
+    RECOMMENDED_MOVIES_FETCH_SUCCESS,
+    SIMILAR_MOVIES_FETCH_FAIL,
     SIMILAR_MOVIES_FETCH_REQUEST,
     SIMILAR_MOVIES_FETCH_SUCCESS
 } from "./movie.types"
@@ -16,13 +20,12 @@ export function fetchMovie(id) {
             target: MOVIEDB_MIDDLEWARE,
             method: "GET",
             url: "/movie/" + id,
-            params: null,
+            params: {
+                append_to_response: 'credits'
+            },
             handlers: {
                 request: MOVIE_FETCH_REQUEST,
-                success: [MOVIE_FETCH_SUCCESS, function (dispatch) {
-                    dispatch(fetchSimilarMovies(id))
-                    dispatch(fetchRecommendedMovies(id))
-                }],
+                success: MOVIE_FETCH_SUCCESS,
                 fail: [ADD_ERROR, MOVIE_FETCH_FAIL]
             }
         }
@@ -57,9 +60,9 @@ export function fetchRecommendedMovies(movieId, page = 1) {
             url: `movie/${movieId}/recommendations`,
             params: {page},
             handlers: {
-                request: SIMILAR_MOVIES_FETCH_REQUEST,
-                success: SIMILAR_MOVIES_FETCH_SUCCESS,
-                fail: [ADD_ERROR, SIMILAR_MOVIES_FETCH_FAIL]
+                request: RECOMMENDED_MOVIES_FETCH_REQUEST,
+                success: RECOMMENDED_MOVIES_FETCH_SUCCESS,
+                fail: [ADD_ERROR, RECOMMENDED_MOVIES_FETCH_FAIL]
             }
         }
     }

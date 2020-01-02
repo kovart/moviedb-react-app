@@ -7,7 +7,7 @@ import {
     POPULAR_MOVIES_FETCH_SUCCESS, TOP_RATED_MOVIES_FETCH_FAIL,
     TOP_RATED_MOVIES_FETCH_REQUEST, TOP_RATED_MOVIES_FETCH_SUCCESS
 } from "./home.types"
-import {moviesFetchReducer} from "../../shared"
+import {moviesFetchReducer} from "../shared"
 
 const initialState = {
     popularMovies: moviesFetchReducer("POPULAR_MOVIES", undefined, {}),
