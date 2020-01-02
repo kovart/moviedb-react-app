@@ -1,6 +1,7 @@
 import {makeStyles} from "@material-ui/core/styles"
 import {Star as StarIcon} from '@material-ui/icons'
 import React from "react"
+import {Typography} from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     movieName: {
         fontSize: "1.1rem",
         fontWeight: "normal",
-        margin: "0 0 8px 0",
+        margin: "4px 0 8px 0",
         lineHeight: '140%'
     },
     rate: {
@@ -57,7 +58,7 @@ const voteColors = {
     EXCELLENT: '#83d620'
 }
 
-function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl, ...rest}) {
+function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl}) {
     const classes = useStyles()
 
     let voteColor = voteColors.EXCELLENT
@@ -66,10 +67,10 @@ function MovieCard({name, overview, genres, voteAverage, date, posterImageUrl, .
     else if(voteAverage < 8) voteColor = voteColors.GOOD
 
     return (
-        <div className={classes.root} {...rest}>
+        <div className={classes.root}>
             <img className={classes.image} src={posterImageUrl} alt={name}/>
             <div className={classes.details}>
-                <h3 className={classes.movieName}>{name}</h3>
+                <Typography variant={"h3"} className={classes.movieName}>{name}</Typography>
                 <div className={classes.rate} style={{backgroundColor: voteColor}}>
                     <StarIcon className={classes.star}/>
                     {voteAverage}

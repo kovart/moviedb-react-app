@@ -7,6 +7,7 @@ import {SnackbarProvider} from "notistack"
 import Notifier from "./components/Notifier"
 import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
+import Movie from "./pages/Movie"
 
 function App(props) {
     const {isLoading, fetchGenres} = props
@@ -22,7 +23,8 @@ function App(props) {
             <Notifier/>
             {isLoading && <LinearProgress style={{position: 'fixed', top: 0, width: '100%', zIndex: 9999}}/>}
             <Navbar/>
-            <Home />
+            {/*<Home />*/}
+            <Movie/>
         </SnackbarProvider>
     );
 }
