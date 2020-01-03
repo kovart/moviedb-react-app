@@ -8,8 +8,8 @@ import {connect} from "react-redux"
 import {fetchMovie, fetchRecommendedMovies, fetchSimilarMovies} from "../store/domains/movie/movie.actions"
 import LazyLoad from 'react-lazyload'
 import {getMovie} from "../store/utils"
-import MovieBrowser from "../components/MovieBrowser"
-import MoviePagePlaceholder from "../components/placeholders/MoviePagePlaceholder"
+import MovieBrowser from "./MovieBrowser"
+import MoviePagePlaceholder from "./placeholders/MoviePagePlaceholder"
 import {useParams} from "react-router"
 
 const useStyles = makeStyles(theme => ({
@@ -214,14 +214,28 @@ function SecondBlock(props) {
     )
 }
 
+const movieListStyles = makeStyles(theme => ({
+    container: {
+        "height": 300,
+        "background": "#f3f3f3",
+        "borderRadius": 4,
+        "display": "flex",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "fontSize": "13pt",
+        "color": "rgba(0, 0, 0, 0.20)"
+    }
+}))
 
 function MovieList({isFetching, isFetched, movies = [], fetch}) {
+    const classes = movieListStyles()
+
     useEffect(function () {
         fetch()
     }, [fetch])
 
     if(isFetched && !movies.length) return (
-        <div>
+        <div className={classes.container}>
             There is no data for this movie
         </div>
     )

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import Container from "@material-ui/core/Container"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
-import MovieBrowser from "../components/MovieBrowser"
+import MovieBrowser from "./MovieBrowser"
 import {makeStyles} from "@material-ui/core/styles"
 import {connect} from "react-redux"
 import {fetchPopularMovies, fetchTopRatedMovies, fetchUpcomingMovies} from "../store/domains/home/home.actions"

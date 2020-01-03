@@ -10,10 +10,10 @@ import LinearProgress from "@material-ui/core/LinearProgress"
 import {fetchGenres} from "./store/domains/common/common.actions"
 import {SnackbarProvider} from "notistack"
 import Notifier from "./components/Notifier"
-import Home from "./pages/Home"
+import Home from "./components/Home"
 import Navbar from "./components/Navbar"
-import Movie from "./pages/Movie"
-import Page404 from "./pages/Page404"
+import Movie from "./components/Movie"
+import Page404 from "./components/Page404"
 
 function App(props) {
     const {isLoading, fetchGenres} = props
