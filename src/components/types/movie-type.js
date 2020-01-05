@@ -7,6 +7,6 @@ export const Movie = PropTypes.shape({
     genres: PropTypes.arrayOf(PropTypes.string).isRequired,
     date: PropTypes.instanceOf(Date).isRequired,
     voteAverage: PropTypes.number.isRequired,
-    posterImageUrl: PropTypes.string.isRequired,
+    posterImageUrl: PropTypes.string,
     backdropImageUrl: PropTypes.string,
 })

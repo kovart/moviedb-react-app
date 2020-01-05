@@ -3,6 +3,7 @@ import {Star as StarIcon} from '@material-ui/icons'
 import React from "react"
 import {Typography} from "@material-ui/core"
 import {Link} from "react-router-dom"
+import {getScoreColor} from "./utils/score-color"
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -54,29 +55,22 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const voteColors = {
-    BAD: '#d63737',
-    OK: '#e2b31e',
-    GOOD: '#b6d645',
-    EXCELLENT: '#83d620'
-}
 
 function MovieCard({id, name, overview, genres, voteAverage, date, posterImageUrl}) {
     const classes = useStyles()
 
-    let voteColor = voteColors.EXCELLENT
-    if(voteAverage < 5.5) voteColor = voteColors.BAD
-    else if(voteAverage < 7) voteColor = voteColors.OK
-    else if(voteAverage < 8) voteColor = voteColors.GOOD
+    const color = getScoreColor(voteAverage)
+
+    const vote = voteAverage > 0 ? voteAverage : '-'
 
     return (
         <Link className={classes.root} to={"/movie/"+id}>
             <img className={classes.image} src={posterImageUrl} alt={name}/>
             <div className={classes.details}>
                 <Typography variant={"h3"} className={classes.movieName}>{name}</Typography>
-                <div className={classes.rate} style={{backgroundColor: voteColor}}>
+                <div className={classes.rate} style={{backgroundColor: color}}>
                     <StarIcon className={classes.star}/>
-                    {voteAverage}
+                    {vote}
                 </div>
                 <div className={classes.extraInfo}>
                     {new Date(date).getFullYear()} • {genres.length ? genres.slice(0, 3).join(', '): '-'}

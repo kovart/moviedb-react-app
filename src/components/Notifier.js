@@ -24,7 +24,7 @@ function Notifier({enqueueSnackbar, closeSnackbar, removeError, errors = []}) {
             })
             displayed.push(error.id)
         })
-    }, [errors])
+    }, [errors, closeSnackbar, enqueueSnackbar, removeError])
 
     return null
 }

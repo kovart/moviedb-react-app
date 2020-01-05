@@ -2,7 +2,7 @@ import {applyMiddleware, combineReducers, createStore, compose} from 'redux'
 import {createBrowserHistory} from 'history'
 import {MovieDbApiMiddleware} from "./middlewares/moviedb-api"
 import {createLogger} from "redux-logger"
-import {connectRouter} from 'connected-react-router'
+import {connectRouter, routerMiddleware} from 'connected-react-router'
 import {commonReducer} from "./domains/common/common.reducer"
 import {uiReducer} from "./domains/ui/ui.reducer"
 import {userReducer} from "./domains/user/user.reducer"
@@ -11,13 +11,13 @@ import {homeReducer} from "./domains/home/home.reducer"
 import {entitiesReducer} from "./domains/entities/entities.reducer"
 import {searchReducer} from "./domains/search/search.reducer"
 
+export const history = createBrowserHistory()
+
 const getMiddleware = function () {
     return process.env.NODE_ENV === 'production' ?
-        applyMiddleware(MovieDbApiMiddleware()) :
-        applyMiddleware(MovieDbApiMiddleware(), createLogger())
+        applyMiddleware(MovieDbApiMiddleware(), routerMiddleware(history)) :
+        applyMiddleware(MovieDbApiMiddleware(), routerMiddleware(history), createLogger())
 }
-
-export const history = createBrowserHistory()
 
 const rootReducer = combineReducers({
     ui: uiReducer,
