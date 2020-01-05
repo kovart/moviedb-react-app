@@ -182,8 +182,10 @@ function SecondBlock(props) {
         entities
     } = props
 
-    const recommendedMovies = recommended.ids.slice(0, 5).map(id => getMovie(id, entities))
-    const similarMovies = similar.ids.slice(0, 5).map(id => getMovie(id, entities))
+    const MOVIES_PER_LIST = 6
+
+    const recommendedMovies = recommended.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities))
+    const similarMovies = similar.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities))
 
     const fetchSimilarMoviesCb = useCallback(() => fetchSimilarMovies(id), [id, fetchSimilarMovies])
     const fetchRecommendedMoviesCb = useCallback(() => fetchRecommendedMovies(id), [id, fetchRecommendedMovies])
@@ -197,6 +199,7 @@ function SecondBlock(props) {
                         isFetching={recommended.isFetching}
                         isFetched={recommended.isFetched}
                         movies={recommendedMovies}
+                        placeholderAmount={MOVIES_PER_LIST}
                         fetch={fetchRecommendedMoviesCb}/>
                 </LazyLoad>
             </section>
@@ -227,7 +230,7 @@ const movieListStyles = makeStyles(theme => ({
     }
 }))
 
-function MovieList({isFetching, isFetched, movies = [], fetch}) {
+function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch}) {
     const classes = movieListStyles()
 
     useEffect(function () {
@@ -241,7 +244,7 @@ function MovieList({isFetching, isFetched, movies = [], fetch}) {
     )
 
     return (
-        <MovieBrowser placeholdersAmount={5}
+        <MovieBrowser placeholdersAmount={placeholderAmount}
                       isFetching={isFetching}
                       isFetched={isFetched}
                       movies={movies} />

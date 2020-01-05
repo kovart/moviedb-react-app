@@ -1,5 +1,4 @@
 import {makeStyles} from "@material-ui/core/styles"
-import {Star as StarIcon} from '@material-ui/icons'
 import React from "react"
 import {Typography} from "@material-ui/core"
 import {Link} from "react-router-dom"
@@ -10,14 +9,25 @@ const useStyles = makeStyles(theme => ({
         position: "relative",
         boxShadow: "none",
         textDecoration: 'none',
-        color: 'inherit'
+        color: 'inherit',
+        "&:hover": {
+            "& $posterImage":{
+                transform: 'scale(1.075)'
+            }
+        }
     },
-    image: {
+    posterContainer: {
+        position: 'relative',
+        overflow: 'hidden'
+    },
+    posterImage: {
+        position: 'relative',
         display: 'block',
         width: "100%",
         minHeight: 250,
         borderRadius: "4px",
         backgroundColor: '#e8e8e8',
+        transition: 'all 0.25s cubic-bezier(0.1, 0.7, 0.19, 0.93)'
     },
     details: {
         padding: '4px 4px'
@@ -31,15 +41,16 @@ const useStyles = makeStyles(theme => ({
     rate: {
         display: 'inline-flex',
         position: 'absolute',
-        left: -8,
+        left: -5,
         top: 8,
+        justifyContent: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Helvetica, sans-serif',
-        padding: '3px 8px',
+        padding: '2px 8px',
+        minWidth: 30,
         fontSize: '10pt',
         color: 'white',
         background: '#83d620',
-        borderRadius: 4,
+        borderRadius: 2,
     },
     star: {
         display: 'block',
@@ -65,11 +76,13 @@ function MovieCard({id, name, overview, genres, voteAverage, date, posterImageUr
 
     return (
         <Link className={classes.root} to={"/movie/"+id}>
-            <img className={classes.image} src={posterImageUrl} alt={name}/>
+            <div className={classes.posterContainer}>
+                <img className={classes.posterImage} src={posterImageUrl} alt={name}/>
+            </div>
             <div className={classes.details}>
                 <Typography variant={"h3"} className={classes.movieName}>{name}</Typography>
                 <div className={classes.rate} style={{backgroundColor: color}}>
-                    <StarIcon className={classes.star}/>
+                    {/*<StarIcon className={classes.star}/>*/}
                     {vote}
                 </div>
                 <div className={classes.extraInfo}>

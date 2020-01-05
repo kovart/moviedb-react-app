@@ -13,13 +13,11 @@ import MovieCardPlaceholder from "./placeholders/MovieCardPlaceholder"
 const useStyles = makeStyles(theme => ({
     movieItem: {
         cursor: 'pointer',
-        margin: 10,
-        transition: 'all 0.1s cubic-bezier(0, 0, 0.2, 1)',
+        padding: theme.spacing(1),
+        transition: 'all 0.1s cubic-bezier(0.43, 0.57, 0, 0.99)',
         transitionDelay: '0.075s',
         "&:hover": {
             background: 'white',
-            boxShadow: '0px 10px 13px #0000000a',
-            transform: "scale(1.075)",
             zIndex: 2,
         },
         [theme.breakpoints.down('sm')]: {
