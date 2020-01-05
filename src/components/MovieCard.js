@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
         minHeight: 250,
         borderRadius: "4px",
         backgroundColor: '#e8e8e8',
-        transition: 'all 0.25s cubic-bezier(0.1, 0.7, 0.19, 0.93)'
+        transition: 'all 0.15s ease-in-out'
     },
     details: {
         padding: '4px 4px'
