@@ -3,7 +3,7 @@ export const VoteColors = {
     BAD: '#d63737',
     OK: '#de8622',
     GOOD: '#b6d645',
-    EXCELLENT: '#78bd25'
+    EXCELLENT: '#3bb33b'
 }
 
 export function getScoreColor(score) {
