@@ -10,6 +10,7 @@ import Home from "./Home"
 import Navbar from "./Navbar"
 import Movie from "./Movie"
 import Page404 from "./Page404"
+import Favorites from "./Favorites"
 
 function App(props) {
     const {isLoading, fetchGenres} = props
@@ -27,6 +28,7 @@ function App(props) {
             <Switch>
                 <Route exact path="/" component={Home}/>
                 <Route path="/movie/:id" component={Movie}/>
+                <Route path="/favorites" component={Favorites}/>
                 <Route component={Page404}/>
             </Switch>
         </SnackbarProvider>

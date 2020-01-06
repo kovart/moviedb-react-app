@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function MovieCard({id, name, genres, voteAverage, date, posterImageUrl, isFavorite, onFavorite}) {
+function MovieCard({id, title, genres, voteAverage, releaseDate, posterImageUrl, isFavorite, onFavorite}) {
     const classes = useStyles()
 
     const color = getScoreColor(voteAverage)
@@ -122,7 +122,7 @@ function MovieCard({id, name, genres, voteAverage, date, posterImageUrl, isFavor
     return (
         <Link className={classes.root} to={"/movie/"+id}>
             <div className={classes.posterContainer}>
-                <img className={classes.posterImage} src={posterImageUrl} alt={name}/>
+                <img className={classes.posterImage} src={posterImageUrl} alt={title}/>
                 <div className={classes.posterOverlay} />
                 <Button
                     variant="contained"
@@ -134,12 +134,12 @@ function MovieCard({id, name, genres, voteAverage, date, posterImageUrl, isFavor
                 </Button>
             </div>
             <div className={classes.details}>
-                <Typography variant="h3" className={classes.movieName}>{name}</Typography>
+                <Typography variant="h3" className={classes.movieName}>{title}</Typography>
                 <Typography variant="body1" className={classes.rate} style={{backgroundColor: color}}>
                     {vote}
                 </Typography>
                 <Typography variant="body1" className={classes.extraInfo}>
-                    {new Date(date).getFullYear()} • {genres.length ? genres.slice(0, 3).join(', '): '-'}
+                    {new Date(releaseDate).getFullYear()} • {genres.length ? genres.slice(0, 3).join(', '): '-'}
                 </Typography>
             </div>
         </Link>

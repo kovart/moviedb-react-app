@@ -14,6 +14,32 @@ import {useParams} from "react-router"
 import FavoriteIcon from "@material-ui/icons/Favorite"
 import Button from "@material-ui/core/Button"
 import {toggleFavorite} from "../store/domains/user/user.actions"
+import {Formatter} from "./utils/formatter"
+
+function Movie(props) {
+    const {id: urlId} = useParams()
+    const {
+        isAppReady,
+
+        movie,
+        user,
+
+        fetchMovie,
+        toggleFavorite
+    } = props
+
+    useEffect(function () {
+        fetchMovie(urlId)
+        window.scrollTo({top: 0, left: 0})
+    }, [urlId, fetchMovie])
+
+    return (
+        <React.Fragment>
+            <MovieInfo movie={movie} loaded={isAppReady && movie.isFetched} onFavorite={toggleFavorite}/>
+            <MovieRecommendations {...props} id={urlId}/>
+        </React.Fragment>
+    )
+}
 
 const useStyles = makeStyles(theme => ({
     movieContainer: {
@@ -81,17 +107,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function Movie(props) {
-    const {id: urlId} = useParams()
-    const {
-        isAppReady,
-
-        movie,
-        user,
-
-        fetchMovie,
-        toggleFavorite
-    } = props
+function MovieInfo({movie, loaded, onFavorite}){
     const {
         id,
         title,
@@ -108,97 +124,87 @@ function Movie(props) {
         crew,
         actors,
 
-        isFavorite,
-        isFetched,
-        isFetching
+        isFavorite
     } = movie
 
     const classes = useStyles()
 
     // TODO Sort actors and crew by their popularity/importance
 
-    useEffect(function () {
-        fetchMovie(urlId)
-        window.scrollTo({top: 0, left: 0})
-    }, [urlId, fetchMovie])
-
     return (
-        <React.Fragment>
-            <main style={{position: 'relative'}}>
-                <div className={classes.backdrop}>
-                    <img className={classes.backdropImage} src={backdropImage} alt={"Backdrop of " + title}/>
-                </div>
-                <Container className={classes.movieContainer}>
-                    {(isAppReady && isFetched) ?
-                        <Grid container spacing={7}>
-                            <Grid item md={3}>
-                                <img className={classes.poster} src={posterImage} alt={"Poster of " + title}/>
-                            </Grid>
-                            <Grid item md={8} style={{color: 'white'}}>
-                                <div className={classes.releaseDate}>
-                                    {Utils.formatDate(releaseDate)} ({productionCountries.join(', ')})
-                                </div>
-                                <Typography variant={"h4"} style={{fontWeight: 'bold'}} component={"h1"}>
-                                    {title}
+        <main style={{position: 'relative'}}>
+            <div className={classes.backdrop}>
+                <img className={classes.backdropImage} src={backdropImage} alt={"Backdrop of " + title}/>
+            </div>
+            <Container className={classes.movieContainer}>
+                {loaded ?
+                    <Grid container spacing={7}>
+                        <Grid item md={3}>
+                            <img className={classes.poster} src={posterImage} alt={"Poster of " + title}/>
+                        </Grid>
+                        <Grid item md={8} style={{color: 'white'}}>
+                            <div className={classes.releaseDate}>
+                                {Formatter.formatDate(releaseDate)} ({productionCountries.join(', ')})
+                            </div>
+                            <Typography variant={"h4"} style={{fontWeight: 'bold'}} component={"h1"}>
+                                {title}
+                            </Typography>
+                            <ul className={classes.genreList}>
+                                {genres.map(genre => (
+                                    <li className={classes.genre} key={genre}>{genre}</li>
+                                ))}
+                            </ul>
+                            <div className={classes.vote}>
+                                <Rating value={voteAverage / 2} readOnly/>
+                                <span style={{margin: '2px 0px 0 6px'}}>{voteAverage}/10</span>
+                                <Button
+                                    style={{marginLeft: 16}}
+                                    onClick={() => onFavorite(id)}
+                                    variant={isFavorite ? "contained" : "outlined"}
+                                    color="secondary"
+                                    aria-label="like"
+                                >
+                                    <FavoriteIcon/>
+                                </Button>
+                            </div>
+                            <div style={{marginTop: 10}}>
+                                <Typography component={"div"} style={{marginRight: 15}}>
+                                    <b>Duration:</b> {duration} min.
                                 </Typography>
-                                <ul className={classes.genreList}>
-                                    {genres.map(genre => (
-                                        <li className={classes.genre} key={genre}>{genre}</li>
+                                <Typography component={"div"}>
+                                    <b>Budget:</b> {budget ? '$' + Formatter.numberWithCommas(budget) : '-'}
+                                </Typography>
+                            </div>
+                            {legend && <React.Fragment>
+                                <h3 className={classes.subtitle}>Legend</h3>
+                                <Typography variant={"body1"}>{legend}</Typography>
+                            </React.Fragment>}
+                            {overview && <React.Fragment>
+                                <h3 className={classes.subtitle}>Overview</h3>
+                                <Typography variant={"body1"}>{overview}</Typography>
+                            </React.Fragment>}
+                            {crew.length && <React.Fragment>
+                                <h3 className={classes.subtitle}>Crew</h3>
+                                <Grid container spacing={3} component="ul" className={classes.crewList}>
+                                    {crew.slice(0, 4).map((person, i) => (
+                                        <Grid item md={3} sm={6} component="li" key={i} style={{paddingRight: 16}}>
+                                            <Typography variant={"body2"}
+                                                        style={{fontWeight: 'bold'}}>{person.name}</Typography>
+                                            <Typography
+                                                variant={"body2"}>{person.department}, {person.job}</Typography>
+                                        </Grid>
                                     ))}
-                                </ul>
-                                <div className={classes.vote}>
-                                    <Rating value={voteAverage / 2} readOnly/>
-                                    <span style={{margin: '2px 0px 0 6px'}}>{voteAverage}/10</span>
-                                    <Button
-                                        style={{marginLeft: 16}}
-                                        onClick={() => toggleFavorite(id)}
-                                        variant={isFavorite ? "contained" : "outlined"}
-                                        color="secondary"
-                                        aria-label="like"
-                                    >
-                                        <FavoriteIcon/>
-                                    </Button>
-                                </div>
-                                <div style={{marginTop: 10}}>
-                                    <Typography component={"div"} style={{marginRight: 15}}>
-                                        <b>Duration:</b> {duration} min.
-                                    </Typography>
-                                    <Typography component={"div"}>
-                                        <b>Budget:</b> {budget ? '$' + Utils.numberWithCommas(budget) : '-'}
-                                    </Typography>
-                                </div>
-                                {legend && <React.Fragment>
-                                    <h3 className={classes.subtitle}>Legend</h3>
-                                    <Typography variant={"body1"}>{legend}</Typography>
-                                </React.Fragment>}
-                                {overview && <React.Fragment>
-                                    <h3 className={classes.subtitle}>Overview</h3>
-                                    <Typography variant={"body1"}>{overview}</Typography>
-                                </React.Fragment>}
-                                {crew.length && <React.Fragment>
-                                    <h3 className={classes.subtitle}>Crew</h3>
-                                    <Grid container spacing={3} component="ul" className={classes.crewList}>
-                                        {crew.slice(0, 4).map((person, i) => (
-                                            <Grid item md={3} sm={6} component="li" key={i} style={{paddingRight: 16}}>
-                                                <Typography variant={"body2"}
-                                                            style={{fontWeight: 'bold'}}>{person.name}</Typography>
-                                                <Typography
-                                                    variant={"body2"}>{person.department}, {person.job}</Typography>
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-                                </React.Fragment>}
-                            </Grid>
-                        </Grid> :
-                        <MoviePagePlaceholder/>}
-                </Container>
-            </main>
-            <SecondBlock {...props} id={urlId}/>
-        </React.Fragment>
+                                </Grid>
+                            </React.Fragment>}
+                        </Grid>
+                    </Grid> :
+                    <MoviePagePlaceholder/>}
+            </Container>
+        </main>
     )
 }
 
-function SecondBlock(props) {
+function MovieRecommendations(props) {
     const {
         id,
 
@@ -288,26 +294,12 @@ function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch
     )
 }
 
-const Utils = {
-    formatDate(date) {
-        const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ]
-        return `${date.getDay()} ${monthNames[date.getMonth()]}, ${date.getFullYear()}`
-    },
-    numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-}
-
 function mapStateToProps(state) {
+    let movie = state.movie.isFetched ? getMovie(state.movie.id, state.entities, state.user) : {}
+    movie = {...movie, ...state.movie}
     return {
         isAppReady: state.common.isAppReady,
-        movie: {
-            ...state.movie,
-            isFavorite: state.movie.id ? state.user.favoriteMovieIds.indexOf(state.movie.id) !== -1 : false
-        },
+        movie: movie,
         entities: state.entities,
         user: state.user
     }

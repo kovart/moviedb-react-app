@@ -11,6 +11,8 @@ import SearchOutput from "./SearchOutput"
 import {cancelSearch, changeQuery, searchMovies} from "../store/domains/search/search.actions"
 import {connect} from "react-redux"
 import {debounce} from "./utils/debounce"
+import FavoriteIcon from '@material-ui/icons/Favorite'
+import VisibilityIcon from '@material-ui/icons/Visibility'
 
 const useStyles = makeStyles(theme => ({
     menu: {
@@ -64,7 +66,16 @@ function Navbar(props) {
                         placeholder={"Search..."}
                         style={{marginLeft: 30}}
                         onChange={handleSearchInput}
-                        onFocus={() => setIsOutputOpen(true)}/>
+                        onFocus={() => setIsOutputOpen(true)}
+                    />
+                    <div style={{marginLeft: 'auto'}}>
+                        <IconButton component={Link} to="/favorites">
+                            <FavoriteIcon />
+                        </IconButton>
+                        <IconButton>
+                            <VisibilityIcon />
+                        </IconButton>
+                    </div>
                 </Toolbar>
             </AppBar>
             {(!!output.length && isOutputOpen) &&
