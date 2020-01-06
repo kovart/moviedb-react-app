@@ -7,6 +7,7 @@ import {makeStyles} from "@material-ui/core/styles"
 import {connect} from "react-redux"
 import {fetchPopularMovies, fetchTopRatedMovies, fetchUpcomingMovies} from "../store/domains/home/home.actions"
 import {getMovie} from "../store/utils"
+import {toggleFavorite} from "../store/domains/user/user.actions"
 
 const useStyles = makeStyles(theme => ({
     movieList: {
@@ -37,7 +38,9 @@ function Home(props) {
         upcomingMovies,
 
         entities,
+        user,
 
+        toggleFavorite,
         fetchPopularMovies,
         fetchTopRatedMovies,
         fetchUpcomingMovies,
@@ -59,7 +62,7 @@ function Home(props) {
         }
     }
     const category = categoryMap[categoryName]
-    const movies = isAppReady ? category.movies.ids.map(id => getMovie(id, entities)) : []
+    const movies = isAppReady ? category.movies.ids.map(id => getMovie(id, entities, user)) : []
 
     function loadMore() {
         if(category.movies.totalMovies === category.movies.ids.length) return
@@ -99,9 +102,11 @@ function Home(props) {
                         onLoadMore={loadMore}
                         placeholdersAmount={10}
                         movies={movies}
+                        onFavorite={toggleFavorite}
                         isFetched={category.movies.isFetched}
                         isFetching={!isAppReady || category.movies.isFetching}
-                        totalMovies={category.movies.totalMovies}/>
+                        totalMovies={category.movies.totalMovies}
+                    />
                 </main>
         </Container>
     )
@@ -116,6 +121,7 @@ function mapStateToProps(state) {
         upcomingMovies: state.home.upcomingMovies,
 
         entities: state.entities,
+        user: state.user,
     }
 }
 
@@ -124,6 +130,7 @@ function mapDispatchToProps(dispatch) {
         fetchPopularMovies: (page) => dispatch(fetchPopularMovies(page)),
         fetchTopRatedMovies: (page) => dispatch(fetchTopRatedMovies(page)),
         fetchUpcomingMovies: (page) => dispatch(fetchUpcomingMovies(page)),
+        toggleFavorite: (id) => dispatch(toggleFavorite(id))
     }
 }
 

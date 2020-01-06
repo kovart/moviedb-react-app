@@ -11,6 +11,9 @@ import {getMovie} from "../store/utils"
 import MovieBrowser from "./MovieBrowser"
 import MoviePagePlaceholder from "./placeholders/MoviePagePlaceholder"
 import {useParams} from "react-router"
+import FavoriteIcon from "@material-ui/icons/Favorite"
+import Button from "@material-ui/core/Button"
+import {toggleFavorite} from "../store/domains/user/user.actions"
 
 const useStyles = makeStyles(theme => ({
     movieContainer: {
@@ -79,9 +82,18 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Movie(props) {
-    const {id} = useParams()
-    const {isAppReady, isFetched, isFetching} = props
+    const {id: urlId} = useParams()
     const {
+        isAppReady,
+
+        movie,
+        user,
+
+        fetchMovie,
+        toggleFavorite
+    } = props
+    const {
+        id,
         title,
         genres,
         duration,
@@ -94,18 +106,21 @@ function Movie(props) {
         legend,
         overview,
         crew,
-        actors
-    } = props
-    const {fetchMovie} = props
+        actors,
+
+        isFavorite,
+        isFetched,
+        isFetching
+    } = movie
 
     const classes = useStyles()
 
     // TODO Sort actors and crew by their popularity/importance
 
     useEffect(function () {
-        fetchMovie(id)
+        fetchMovie(urlId)
         window.scrollTo({top: 0, left: 0})
-    }, [id, fetchMovie])
+    }, [urlId, fetchMovie])
 
     return (
         <React.Fragment>
@@ -134,6 +149,15 @@ function Movie(props) {
                                 <div className={classes.vote}>
                                     <Rating value={voteAverage / 2} readOnly/>
                                     <span style={{margin: '2px 0px 0 6px'}}>{voteAverage}/10</span>
+                                    <Button
+                                        style={{marginLeft: 16}}
+                                        onClick={() => toggleFavorite(id)}
+                                        variant={isFavorite ? "contained" : "outlined"}
+                                        color="secondary"
+                                        aria-label="like"
+                                    >
+                                        <FavoriteIcon/>
+                                    </Button>
                                 </div>
                                 <div style={{marginTop: 10}}>
                                     <Typography component={"div"} style={{marginRight: 15}}>
@@ -156,8 +180,10 @@ function Movie(props) {
                                     <Grid container spacing={3} component="ul" className={classes.crewList}>
                                         {crew.slice(0, 4).map((person, i) => (
                                             <Grid item md={3} sm={6} component="li" key={i} style={{paddingRight: 16}}>
-                                                <Typography variant={"body2"} style={{fontWeight: 'bold'}}>{person.name}</Typography>
-                                                <Typography variant={"body2"}>{person.department}, {person.job}</Typography>
+                                                <Typography variant={"body2"}
+                                                            style={{fontWeight: 'bold'}}>{person.name}</Typography>
+                                                <Typography
+                                                    variant={"body2"}>{person.department}, {person.job}</Typography>
                                             </Grid>
                                         ))}
                                     </Grid>
@@ -167,7 +193,7 @@ function Movie(props) {
                         <MoviePagePlaceholder/>}
                 </Container>
             </main>
-            <SecondBlock {...props} id={id}/>
+            <SecondBlock {...props} id={urlId}/>
         </React.Fragment>
     )
 }
@@ -175,17 +201,22 @@ function Movie(props) {
 function SecondBlock(props) {
     const {
         id,
-        recommendedMovies: recommended,
-        similarMovies: similar,
+
+        movie,
+        entities,
+        user,
+
+        toggleFavorite,
         fetchSimilarMovies,
         fetchRecommendedMovies,
-        entities
     } = props
+
+    const {recommendedMovies: recommended, similarMovies: similar} = movie
 
     const MOVIES_PER_LIST = 6
 
-    const recommendedMovies = recommended.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities))
-    const similarMovies = similar.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities))
+    const recommendedMovies = recommended.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities, user))
+    const similarMovies = similar.ids.slice(0, MOVIES_PER_LIST).map(id => getMovie(id, entities, user))
 
     const fetchSimilarMoviesCb = useCallback(() => fetchSimilarMovies(id), [id, fetchSimilarMovies])
     const fetchRecommendedMoviesCb = useCallback(() => fetchRecommendedMovies(id), [id, fetchRecommendedMovies])
@@ -200,7 +231,9 @@ function SecondBlock(props) {
                         isFetched={recommended.isFetched}
                         movies={recommendedMovies}
                         placeholderAmount={MOVIES_PER_LIST}
-                        fetch={fetchRecommendedMoviesCb}/>
+                        fetch={fetchRecommendedMoviesCb}
+                        onFavorite={toggleFavorite}
+                    />
                 </LazyLoad>
             </section>
             <section>
@@ -210,7 +243,10 @@ function SecondBlock(props) {
                         isFetching={similar.isFetching}
                         isFetched={similar.isFetched}
                         movies={similarMovies}
-                        fetch={fetchSimilarMoviesCb}/>
+                        placeholderAmount={MOVIES_PER_LIST}
+                        fetch={fetchSimilarMoviesCb}
+                        onFavorite={toggleFavorite}
+                    />
                 </LazyLoad>
             </section>
         </Container>
@@ -225,21 +261,20 @@ const movieListStyles = makeStyles(theme => ({
         "display": "flex",
         "justifyContent": "center",
         "alignItems": "center",
-        "fontSize": "13pt",
         "color": "rgba(0, 0, 0, 0.20)"
     }
 }))
 
-function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch}) {
+function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch, onFavorite}) {
     const classes = movieListStyles()
 
     useEffect(function () {
         fetch()
     }, [fetch])
 
-    if(isFetched && !movies.length) return (
+    if (isFetched && !movies.length) return (
         <div className={classes.container}>
-            There is no data for this movie
+            <Typography variant="body1">There is no data for this movie</Typography>
         </div>
     )
 
@@ -247,7 +282,9 @@ function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch
         <MovieBrowser placeholdersAmount={placeholderAmount}
                       isFetching={isFetching}
                       isFetched={isFetched}
-                      movies={movies} />
+                      movies={movies}
+                      onFavorite={onFavorite}
+        />
     )
 }
 
@@ -267,9 +304,12 @@ const Utils = {
 function mapStateToProps(state) {
     return {
         isAppReady: state.common.isAppReady,
+        movie: {
+            ...state.movie,
+            isFavorite: state.movie.id ? state.user.favoriteMovieIds.indexOf(state.movie.id) !== -1 : false
+        },
         entities: state.entities,
-
-        ...state.movie,
+        user: state.user
     }
 }
 
@@ -277,7 +317,8 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchMovie: (id) => dispatch(fetchMovie(id)),
         fetchSimilarMovies: (id) => dispatch(fetchSimilarMovies(id)),
-        fetchRecommendedMovies: (id) => dispatch(fetchRecommendedMovies(id))
+        fetchRecommendedMovies: (id) => dispatch(fetchRecommendedMovies(id)),
+        toggleFavorite: (id) => dispatch(toggleFavorite(id))
     }
 }
 

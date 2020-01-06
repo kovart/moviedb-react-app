@@ -51,7 +51,7 @@ MovieBrowser.propTypes = {
     placeholdersAmount: PropTypes.number,
 }
 
-function MovieBrowser({movies = [], isFetching, isFetched, totalMovies, placeholdersAmount = 5, onLoadMore,  ...rest}) {
+function MovieBrowser({movies = [], isFetching, isFetched, totalMovies, placeholdersAmount = 5, onLoadMore, onFavorite,  ...rest}) {
     const classes = useStyles()
 
     const canLoadMore = movies.length < totalMovies && !!onLoadMore
@@ -63,7 +63,7 @@ function MovieBrowser({movies = [], isFetching, isFetched, totalMovies, placehol
                     <Grid className={classes.movieItem} item key={index} xs={12} sm={4} md={2}>
                         {movie ?
                             <LazyLoad height={400} once placeholder={<MovieCardPlaceholder />}>
-                                <MovieCard {...movie} />
+                                <MovieCard {...movie} onFavorite={onFavorite} />
                             </LazyLoad> : <MovieCardPlaceholder/>}
                     </Grid>
                 ))}

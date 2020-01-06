@@ -3,6 +3,9 @@ import React from "react"
 import {Typography} from "@material-ui/core"
 import {Link} from "react-router-dom"
 import {getScoreColor} from "./utils/score-color"
+import Button from "@material-ui/core/Button"
+import FavoriteIcon from "@material-ui/icons/Favorite"
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -13,6 +16,12 @@ const useStyles = makeStyles(theme => ({
         "&:hover": {
             "& $posterImage":{
                 transform: 'scale(1.075)'
+            },
+            "& $posterOverlay": {
+                opacity: 1
+            },
+            "& $favoriteBtn": {
+                display: 'flex'
             }
         }
     },
@@ -29,8 +38,19 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#e8e8e8',
         transition: 'all 0.15s ease-in-out'
     },
+    posterOverlay: {
+        position: 'absolute',
+        content: '""',
+        width: '100%',
+        height: '100%',
+        left: 0,
+        top: 0,
+        opacity: 0,
+        transition: 'all 0.15s ease-in-out',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0) 41%, rgba(0,0,0,0.40) 100%)'
+    },
     details: {
-        padding: '4px 4px'
+        padding: '6px 4px'
     },
     movieName: {
         fontSize: "1.1rem",
@@ -47,47 +67,80 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 'bold',
         padding: '2px 8px',
         minWidth: 30,
-        fontSize: '10pt',
         color: 'white',
         background: '#83d620',
         borderRadius: 2,
     },
-    star: {
-        display: 'block',
-        width: 18,
-        height: 18,
-        fill: '#00000047',
-        marginRight: 4
-    },
     extraInfo: {
-        fontSize: '11pt',
         color: 'grey',
         lineHeight: '150%'
+    },
+    favoriteBtn: {
+        display: 'none',
+        position: 'absolute',
+        right: 10,
+        top: 10,
+        minWidth: 16,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        color: 'white',
+        background: 'rgba(75, 87, 95, 0.9)',
+        "&:hover": {
+            background: 'rgba(245, 0, 87, 1)',
+        }
+    },
+    favoriteBtnActive: {
+        display: 'flex',
+        position: 'absolute',
+        right: 10,
+        top: 10,
+        minWidth: 16,
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        color: 'white',
+        background: 'rgba(245, 0, 87, 1)',
+        "&:hover": {
+            background: 'rgba(245, 0, 87, 0.85)',
+        }
     }
 }))
 
 
-function MovieCard({id, name, overview, genres, voteAverage, date, posterImageUrl}) {
+function MovieCard({id, name, genres, voteAverage, date, posterImageUrl, isFavorite, onFavorite}) {
     const classes = useStyles()
 
     const color = getScoreColor(voteAverage)
 
     const vote = voteAverage > 0 ? voteAverage : '-'
 
+    function handleFavorite(e){
+        e.stopPropagation()
+        e.preventDefault()
+        onFavorite && onFavorite(id)
+    }
+
     return (
         <Link className={classes.root} to={"/movie/"+id}>
             <div className={classes.posterContainer}>
                 <img className={classes.posterImage} src={posterImageUrl} alt={name}/>
+                <div className={classes.posterOverlay} />
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    size="medium"
+                    onClick={handleFavorite}
+                    className={isFavorite ? classes.favoriteBtnActive : classes.favoriteBtn}>
+                    {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon/>}
+                </Button>
             </div>
             <div className={classes.details}>
-                <Typography variant={"h3"} className={classes.movieName}>{name}</Typography>
-                <div className={classes.rate} style={{backgroundColor: color}}>
-                    {/*<StarIcon className={classes.star}/>*/}
+                <Typography variant="h3" className={classes.movieName}>{name}</Typography>
+                <Typography variant="body1" className={classes.rate} style={{backgroundColor: color}}>
                     {vote}
-                </div>
-                <div className={classes.extraInfo}>
+                </Typography>
+                <Typography variant="body1" className={classes.extraInfo}>
                     {new Date(date).getFullYear()} • {genres.length ? genres.slice(0, 3).join(', '): '-'}
-                </div>
+                </Typography>
             </div>
         </Link>
     )

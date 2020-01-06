@@ -4,11 +4,12 @@ export function prepareImage(url, size='w500') {
     return `https://image.tmdb.org/t/p/${size}${url}`
 }
 
-export function getMovie(id, entities){
+export function getMovie(id, entities, user){
     const movie = entities.moviesById[id]
     return {
         ...movie,
-        genres: movie.genreIds.map(id => entities.genresById[id])
+        genres: movie.genreIds.map(id => entities.genresById[id]),
+        isFavorite: user.favoriteMovieIds.indexOf(id) !== -1
     }
 }
 
