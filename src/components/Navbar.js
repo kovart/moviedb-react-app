@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton"
 import {Menu as MenuIcon} from "@material-ui/icons"
 import Typography from "@material-ui/core/Typography"
 import {Link} from "react-router-dom"
-import {makeStyles} from "@material-ui/core/styles"
+import {makeStyles, withStyles} from "@material-ui/core/styles"
 import SearchInput from "./SearchInput"
 import SearchOutput from "./SearchOutput"
 import {cancelSearch, changeQuery, searchMovies} from "../store/domains/search/search.actions"
@@ -13,6 +13,7 @@ import {connect} from "react-redux"
 import {debounce} from "./utils/debounce"
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import VisibilityIcon from '@material-ui/icons/Visibility'
+import Button from "@material-ui/core/Button"
 
 const useStyles = makeStyles(theme => ({
     menu: {
@@ -23,6 +24,28 @@ const useStyles = makeStyles(theme => ({
         color: 'inherit'
     }
 }))
+
+const CustomAppBar = withStyles({
+    root: {
+        color: '#333',
+        background: 'white',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+    }
+})(AppBar)
+
+const NavButton = withStyles(theme =>({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        marginRight: theme.spacing(1),
+        marginLeft: theme.spacing(1),
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+
+        "&:hover": {
+            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+        }
+    }
+}))(Button)
 
 function Navbar(props) {
     const {query, foundMovies, entities} = props
@@ -53,7 +76,7 @@ function Navbar(props) {
 
     return (
         <React.Fragment>
-            <AppBar position="sticky">
+            <CustomAppBar position="sticky">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu" className={classes.menu}>
                         <MenuIcon/>
@@ -69,15 +92,17 @@ function Navbar(props) {
                         onFocus={() => setIsOutputOpen(true)}
                     />
                     <div style={{marginLeft: 'auto'}}>
-                        <IconButton component={Link} to="/favorites">
-                            <FavoriteIcon />
-                        </IconButton>
-                        <IconButton>
-                            <VisibilityIcon />
-                        </IconButton>
+                        <NavButton component={Link} to="/favorites" color="inherit">
+                            <FavoriteIcon style={{marginRight: 10, fill: "#f50057"}} />
+                            Favorites
+                        </NavButton>
+                        <NavButton component={Link} color="inherit">
+                            <VisibilityIcon style={{marginRight: 10, fill: '#115293'}} />
+                            Visited
+                        </NavButton>
                     </div>
                 </Toolbar>
-            </AppBar>
+            </CustomAppBar>
             {(!!output.length && isOutputOpen) &&
             <SearchOutput movies={output} onClose={e => setIsOutputOpen(false)}/>}
         </React.Fragment>

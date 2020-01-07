@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
     input: {
         color: 'inherit',
         paddingLeft: theme.spacing(7),
-        padding: theme.spacing(1),
-        transition: theme.transitions.create('width'),
+        padding: 4,
+        transition: theme.transitions.create('background'),
         background: 'rgba(0, 0, 0, 0.05)',
         borderRadius: theme.shape.borderRadius,
         "&:focus, &:hover": {

@@ -1,29 +1,27 @@
 import React, {useCallback, useEffect} from 'react'
+import {useParams} from "react-router"
+import {connect} from "react-redux"
+import LazyLoad from 'react-lazyload'
 import Container from "@material-ui/core/Container"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Rating from "@material-ui/lab/Rating"
 import {makeStyles} from "@material-ui/core/styles"
-import {connect} from "react-redux"
-import {fetchMovie, fetchRecommendedMovies, fetchSimilarMovies} from "../store/domains/movie/movie.actions"
-import LazyLoad from 'react-lazyload'
+import {fetchMoviePage, fetchRecommendedMovies, fetchSimilarMovies} from "../store/domains/movie/movie.actions"
 import {getMovie} from "../store/utils"
 import MovieBrowser from "./MovieBrowser"
 import MoviePagePlaceholder from "./placeholders/MoviePagePlaceholder"
-import {useParams} from "react-router"
 import FavoriteIcon from "@material-ui/icons/Favorite"
 import Button from "@material-ui/core/Button"
 import {toggleFavorite} from "../store/domains/user/user.actions"
 import {Formatter} from "./utils/formatter"
+import EmptyBlock from "./placeholders/EmptyBlock"
 
 function Movie(props) {
     const {id: urlId} = useParams()
     const {
         isAppReady,
-
         movie,
-        user,
-
         fetchMovie,
         toggleFavorite
     } = props
@@ -107,15 +105,15 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function MovieInfo({movie, loaded, onFavorite}){
+function MovieInfo({movie, loaded, onFavorite}) {
     const {
         id,
         title,
         genres,
         duration,
         budget,
-        backdropImage,
-        posterImage,
+        backdropImageUrl,
+        posterImageUrl,
         releaseDate,
         productionCountries,
         voteAverage,
@@ -129,18 +127,22 @@ function MovieInfo({movie, loaded, onFavorite}){
 
     const classes = useStyles()
 
+    const poster = posterImageUrl || require('../assets/images/abstract_movie_poster.svg')
+    // TODO Add backdrop fallback
+    // const backdrop = backdropImageUrl
+
     // TODO Sort actors and crew by their popularity/importance
 
     return (
         <main style={{position: 'relative'}}>
             <div className={classes.backdrop}>
-                <img className={classes.backdropImage} src={backdropImage} alt={"Backdrop of " + title}/>
+                <img className={classes.backdropImage} src={backdropImageUrl} alt={"Backdrop of " + title}/>
             </div>
             <Container className={classes.movieContainer}>
                 {loaded ?
                     <Grid container spacing={7}>
                         <Grid item md={3}>
-                            <img className={classes.poster} src={posterImage} alt={"Poster of " + title}/>
+                            <img className={classes.poster} src={poster} alt={"Poster of " + title}/>
                         </Grid>
                         <Grid item md={8} style={{color: 'white'}}>
                             <div className={classes.releaseDate}>
@@ -236,7 +238,7 @@ function MovieRecommendations(props) {
                         isFetching={recommended.isFetching}
                         isFetched={recommended.isFetched}
                         movies={recommendedMovies}
-                        placeholderAmount={MOVIES_PER_LIST}
+                        amount={MOVIES_PER_LIST}
                         fetch={fetchRecommendedMoviesCb}
                         onFavorite={toggleFavorite}
                     />
@@ -249,7 +251,7 @@ function MovieRecommendations(props) {
                         isFetching={similar.isFetching}
                         isFetched={similar.isFetched}
                         movies={similarMovies}
-                        placeholderAmount={MOVIES_PER_LIST}
+                        amount={MOVIES_PER_LIST}
                         fetch={fetchSimilarMoviesCb}
                         onFavorite={toggleFavorite}
                     />
@@ -259,33 +261,19 @@ function MovieRecommendations(props) {
     )
 }
 
-const movieListStyles = makeStyles(theme => ({
-    container: {
-        "height": 300,
-        "background": "#f3f3f3",
-        "borderRadius": 4,
-        "display": "flex",
-        "justifyContent": "center",
-        "alignItems": "center",
-        "color": "rgba(0, 0, 0, 0.20)"
-    }
-}))
 
-function MovieList({isFetching, isFetched, movies = [], placeholderAmount, fetch, onFavorite}) {
-    const classes = movieListStyles()
+function MovieList({isFetching, isFetched, movies = [], amount, fetch, onFavorite}) {
 
     useEffect(function () {
         fetch()
     }, [fetch])
 
     if (isFetched && !movies.length) return (
-        <div className={classes.container}>
-            <Typography variant="body1">There is no data for this movie</Typography>
-        </div>
+        <EmptyBlock text={"There is no data for this movie"} />
     )
 
     return (
-        <MovieBrowser placeholdersAmount={placeholderAmount}
+        <MovieBrowser placeholdersAmount={amount}
                       isFetching={isFetching}
                       isFetched={isFetched}
                       movies={movies}
@@ -307,7 +295,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        fetchMovie: (id) => dispatch(fetchMovie(id)),
+        fetchMovie: (id) => dispatch(fetchMoviePage(id)),
         fetchSimilarMovies: (id) => dispatch(fetchSimilarMovies(id)),
         fetchRecommendedMovies: (id) => dispatch(fetchRecommendedMovies(id)),
         toggleFavorite: (id) => dispatch(toggleFavorite(id))

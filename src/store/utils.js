@@ -29,8 +29,6 @@ export function prepareMovie({raw = {}, posterSize = 'w500', backdropSize = 'ori
     const extendedData = !extended ? null : {
         duration: raw.runtime,
         budget: raw.budget,
-        backdropImage: prepareImage(raw.backdrop_path, 'original'),
-        posterImage: prepareImage(raw.poster_path),
         productionCountries: (raw.production_countries || []).map(c => c.name),
         legend: raw.tagline,
         actors: (raw.credits || []).cast.map(cast => ({

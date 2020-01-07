@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Container from "@material-ui/core/Container"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
@@ -6,8 +6,9 @@ import MovieBrowser from "./MovieBrowser"
 import {makeStyles} from "@material-ui/core/styles"
 import {connect} from "react-redux"
 import {fetchPopularMovies, fetchTopRatedMovies, fetchUpcomingMovies} from "../store/domains/home/home.actions"
-import {getMovie} from "../store/utils"
 import {toggleFavorite} from "../store/domains/user/user.actions"
+import {getMovie} from "../store/utils"
+import withStyles from "@material-ui/core/styles/withStyles"
 
 const useStyles = makeStyles(theme => ({
     movieList: {
@@ -16,10 +17,29 @@ const useStyles = makeStyles(theme => ({
     container: {
         margin: '12px auto'
     },
-    tabs: {
-        margin: '8px 0'
-    }
 }))
+
+const CustomTabs = withStyles({
+    root: {
+        borderRadius: 4,
+        border: '1px solid rgb(242, 242, 242)',
+        overflow: 'hidden',
+        background: 'white',
+    },
+    indicator: {
+        background: 'none'
+    }
+})(Tabs)
+
+const CustomTab = withStyles({
+    root: {
+        minWidth: 110
+    },
+    selected: {
+        background: '#115293',
+        color: 'white'
+    }
+})(Tab)
 
 const categories = {
     POPULAR: 'popular',
@@ -85,18 +105,15 @@ function Home(props) {
 
     return (
         <Container className={classes.container}>
-                <Tabs
-                    className={classes.tabs}
+                <CustomTabs
                     value={categoryName}
-                    indicatorColor="primary"
-                    textColor="primary"
                     onChange={(e, newValue) => switchTab(newValue)}
                     aria-label="disabled tabs example"
                 >
-                    <Tab label="Popular" value={categories.POPULAR}/>
-                    <Tab label="Top rated" value={categories.TOP_RATED}/>
-                    <Tab label="Trending" value={categories.UPCOMING}/>
-                </Tabs>
+                    <CustomTab label="Popular" value={categories.POPULAR}/>
+                    <CustomTab label="Top rated" value={categories.TOP_RATED}/>
+                    <CustomTab label="Upcoming" value={categories.UPCOMING}/>
+                </CustomTabs>
                 <main className={classes.movieList}>
                     <MovieBrowser
                         onLoadMore={loadMore}

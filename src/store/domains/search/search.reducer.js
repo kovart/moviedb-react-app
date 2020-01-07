@@ -20,7 +20,7 @@ export function searchReducer(state = initialSearchState, action) {
         case SEARCH_REQUEST:
             return {...state, isFetching: true, isFetched: false, foundMovies: []}
         case SEARCH_SUCCESS: {
-            let movies = payload.results.map(m => prepareMovie(m))
+            let movies = payload.results.map(movie => prepareMovie({raw: movie, posterSize: 'w154'}))
             movies = filterEmptyMovies(movies).sort((a, b) => b.popularity - a.popularity)
             return {
                 ...state,
@@ -39,6 +39,6 @@ export function searchReducer(state = initialSearchState, action) {
 
 function filterEmptyMovies(movies) {
     return movies.filter(m => {
-        return !!m.name && m.popularity > 0.25
+        return !!m.title && m.popularity > 0.25
     })
 }

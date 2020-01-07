@@ -4,7 +4,12 @@ import {
     UPCOMING_MOVIES_FETCH_SUCCESS
 } from "../home/home.types"
 import {GENRES_FETCH_SUCCESS} from "../common/common.types"
-import {MOVIE_FETCH_SUCCESS, RECOMMENDED_MOVIES_FETCH_SUCCESS, SIMILAR_MOVIES_FETCH_SUCCESS} from "../movie/movie.types"
+import {
+    MOVIE_PAGE_FETCH_SUCCESS,
+    RECOMMENDED_MOVIES_FETCH_SUCCESS,
+    SIMILAR_MOVIES_FETCH_SUCCESS
+} from "../movie/movie.types"
+import {MOVIE_FETCH_SUCCESS} from "./entities.types"
 import {prepareMovie} from "../../utils"
 
 const initialState = {
@@ -39,6 +44,7 @@ export function entitiesReducer(state = initialState, action) {
             }
             return {...state, moviesById: moviesById}
         }
+        case MOVIE_PAGE_FETCH_SUCCESS:
         case MOVIE_FETCH_SUCCESS: {
             const movie = prepareMovie({raw: payload, extended: true})
             const moviesById = {...state.moviesById}

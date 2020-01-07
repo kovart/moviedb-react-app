@@ -82,11 +82,11 @@ function Item({movie}){
 
     return (
         <ListItem button component={Link} className={classes.item} to={"/movie/" + movie.id}>
-                <img className={classes.itemImage} src={poster} alt={movie.name}/>
+                <img className={classes.itemImage} src={poster} alt={movie.title}/>
                 <div className={classes.itemInfo}>
                     <Typography variant="body1">
-                        <span style={{fontWeight: 500}}>{movie.name}</span>
-                        <span style={{color: 'grey'}}>{movie.date > 0 ? ` (${movie.date.getFullYear()})` : ''}</span>
+                        <span style={{fontWeight: 500}}>{movie.title}</span>
+                        <span style={{color: 'grey'}}>{movie.releaseDate > 0 ? ` (${movie.releaseDate.getFullYear()})` : ''}</span>
                     </Typography>
                     <Typography variant="body2" component="span" style={{color: 'grey'}}>
                         {!!movie.genres.length ? movie.genres.join(', ') : '—'}
