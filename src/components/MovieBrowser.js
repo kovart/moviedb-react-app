@@ -1,7 +1,6 @@
 import React from "react"
 import LazyLoad from 'react-lazyload'
 import PropTypes from 'prop-types'
-import Grid from "@material-ui/core/Grid"
 import MovieCard from "./MovieCard"
 import {makeStyles} from "@material-ui/core/styles"
 import CircularProgress from "@material-ui/core/CircularProgress"
@@ -9,21 +8,9 @@ import {Movie} from "./types/movie-type"
 import Button from "@material-ui/core/Button"
 import {Loop} from "@material-ui/icons"
 import MovieCardPlaceholder from "./placeholders/MovieCardPlaceholder"
+import MovieList, {MovieListItem} from "./MovieList"
 
 const useStyles = makeStyles(theme => ({
-    movieItem: {
-        cursor: 'pointer',
-        padding: theme.spacing(1),
-        transition: 'all 0.1s cubic-bezier(0.43, 0.57, 0, 0.99)',
-        transitionDelay: '0.075s',
-        "&:hover": {
-            background: 'white',
-            zIndex: 2,
-        },
-        [theme.breakpoints.down('sm')]: {
-            margin: '15px 25px',
-        },
-    },
     loader: {
         height: 400,
         width: 300,
@@ -51,23 +38,24 @@ MovieBrowser.propTypes = {
     placeholdersAmount: PropTypes.number,
 }
 
-function MovieBrowser({movies = [], isFetching, isFetched, totalMovies, placeholdersAmount = 5, onLoadMore, onFavorite,  ...rest}) {
+function MovieBrowser({movies = [], isFetching, isFetched, totalMovies, placeholdersAmount = 5, onLoadMore, onFavorite}) {
     const classes = useStyles()
 
     const canLoadMore = movies.length < totalMovies && !!onLoadMore
 
     return (
         <React.Fragment>
-            <Grid container justify="flex-start" wrap={"wrap"} spacing={2} {...rest}>
+            <MovieList>
                 {(isFetched ? movies : Array.from(new Array(placeholdersAmount))).map((movie, index) => (
-                    <Grid className={classes.movieItem} item key={index} xs={12} sm={4} md={2}>
+                    <MovieListItem key={movie ? movie.id : 'index:'+index}>
                         {movie ?
                             <LazyLoad height={400} once placeholder={<MovieCardPlaceholder />}>
                                 <MovieCard {...movie} onFavorite={onFavorite} />
-                            </LazyLoad> : <MovieCardPlaceholder/>}
-                    </Grid>
+                            </LazyLoad> :
+                            <MovieCardPlaceholder/>}
+                    </MovieListItem>
                 ))}
-            </Grid>
+            </MovieList>
             {canLoadMore &&
             <Button className={classes.button} variant="outlined" fullWidth size={"large"} disabled={isFetching} onClick={onLoadMore}>
                 {isFetching ?

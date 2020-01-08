@@ -3,12 +3,12 @@ import LazyLoad from 'react-lazyload'
 import {connect} from "react-redux"
 import Typography from "@material-ui/core/Typography"
 import Container from "@material-ui/core/Container"
-import Grid from "@material-ui/core/Grid"
 import EmptyBlock from "./placeholders/EmptyBlock"
 import {fetchMovie} from "../store/domains/entities/entities.actions"
 import {getMovie} from "../store/utils"
 import {toggleFavorite} from "../store/domains/user/user.actions"
 import MovieCardFetch from "./MovieCardFetch"
+import MovieList, {MovieListItem} from "./MovieList"
 
 function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavorite}) {
 
@@ -21,12 +21,12 @@ function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavo
                 <EmptyBlock text="You haven't marked favorite movies yet"/>
             )}
             {!!movieIds.length && (
-                <Grid container spacing={2}>
+                <MovieList>
                     {movieIds.map(id => {
                         const movie = getMovie(id, entities, user)
                         return (
                             <LazyLoad minheight={400} key={id} once>
-                                <Grid item xs={12} sm={4} md={2}>
+                                <MovieListItem>
                                     <MovieCardFetch
                                         id={id}
                                         movie={movie}
@@ -34,11 +34,11 @@ function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavo
                                         ready={isAppReady}
                                         onFavorite={toggleFavorite}
                                     />
-                                </Grid>
+                                </MovieListItem>
                             </LazyLoad>
                         )
                     })}
-                </Grid>
+                </MovieList>
             )}
         </Container>
     )
