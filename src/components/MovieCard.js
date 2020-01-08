@@ -6,6 +6,7 @@ import {getScoreColor} from "./utils/score-color"
 import Button from "@material-ui/core/Button"
 import FavoriteIcon from "@material-ui/icons/Favorite"
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import classNames from 'classnames'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles(theme => ({
             "& $favoriteBtn": {
                 display: 'flex'
             }
-        }
+        },
     },
     posterContainer: {
         position: 'relative',
@@ -53,12 +54,11 @@ const useStyles = makeStyles(theme => ({
         padding: '6px 4px'
     },
     movieName: {
-        fontSize: "1.1rem",
         fontWeight: "normal",
         margin: "4px 0 8px 0",
         lineHeight: '140%'
     },
-    rate: {
+    score: {
         display: 'inline-flex',
         position: 'absolute',
         left: -5,
@@ -70,6 +70,12 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
         background: '#83d620',
         borderRadius: 2,
+        [theme.breakpoints.down('xs')]: {
+            left: -8,
+            top: 12,
+            fontSize: '1.5rem',
+            minWidth: 40,
+        }
     },
     extraInfo: {
         color: 'grey',
@@ -87,16 +93,18 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(75, 87, 95, 0.9)',
         "&:hover": {
             background: 'rgba(245, 0, 87, 1)',
+        },
+        [theme.breakpoints.down('xs')]: {
+            display: 'flex',
+            padding: theme.spacing(2.5),
+            "& svg": {
+                height: theme.spacing(4),
+                width: theme.spacing(4),
+            }
         }
     },
     favoriteBtnActive: {
         display: 'flex',
-        position: 'absolute',
-        right: 10,
-        top: 10,
-        minWidth: 16,
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
         color: 'white',
         background: 'rgba(245, 0, 87, 1)',
         "&:hover": {
@@ -129,13 +137,13 @@ function MovieCard({id, title, genres, voteAverage, releaseDate, posterImageUrl,
                     color="secondary"
                     size="medium"
                     onClick={handleFavorite}
-                    className={isFavorite ? classes.favoriteBtnActive : classes.favoriteBtn}>
+                    className={classNames([classes.favoriteBtn, {[classes.favoriteBtnActive]: isFavorite}])}>
                     {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon/>}
                 </Button>
             </div>
             <div className={classes.details}>
-                <Typography variant="h3" className={classes.movieName}>{title}</Typography>
-                <Typography variant="body1" className={classes.rate} style={{backgroundColor: color}}>
+                <Typography component="h4" className={classes.movieName}>{title}</Typography>
+                <Typography variant="body1" className={classes.score} style={{backgroundColor: color}}>
                     {vote}
                 </Typography>
                 <Typography variant="body1" className={classes.extraInfo}>
