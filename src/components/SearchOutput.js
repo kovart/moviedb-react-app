@@ -8,15 +8,6 @@ import {getScoreColor} from "./utils/score-color"
 import {Link} from "react-router-dom"
 
 const useStyles = makeStyles(theme => ({
-    overlay: {
-        position: 'fixed',
-        width: '100%',
-        height: '100vh',
-        top: 0,
-        left: 0,
-        background: 'rgba(9, 9, 10, 0.6)',
-        zIndex: 1
-    },
     root: {
         position: 'fixed',
         maxHeight: 400,
@@ -32,12 +23,11 @@ SearchOutput.propTypes = {
     movies: PropTypes.arrayOf(Movie)
 }
 
-function SearchOutput({movies = [], onClose}) {
+function SearchOutput({movies = [], fullHeight = false}) {
     const classes = useStyles()
 
     return (
         <React.Fragment>
-            <div className={classes.overlay} onClick={onClose}/>
             <List className={classes.root} aria-labelledby="nested-list-subheader">
                 {movies.map(movie => <Item key={movie.id} movie={movie} />)}
             </List>
@@ -49,13 +39,17 @@ const useItemStyles = makeStyles(theme => ({
     item: {
         height: 60,
         padding: theme.spacing(1),
-        paddingLeft: 20
+        paddingLeft: 20,
+
+        [theme.breakpoints.down('sm')]: {
+            height: 90,
+        }
     },
     itemImage: {
         height: '100%',
-        maxWidth: 36,
         borderRadius: 4,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        flexShrink: 0
     },
     itemInfo: {
          marginLeft: theme.spacing(2),

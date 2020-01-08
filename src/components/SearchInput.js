@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => ({
         transition: theme.transitions.create('background'),
         background: 'rgba(0, 0, 0, 0.05)',
         borderRadius: theme.shape.borderRadius,
+        width: '100%',
         "&:focus, &:hover": {
             background: 'rgba(0, 0, 0, 0.065)',
         },
@@ -36,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function SearchInput({value, placeholder, onChange, onFocus, style}) {
+function SearchInput({value, placeholder, onChange, onFocus, onBlur, style}) {
     const classes = useStyles()
 
     return (
@@ -49,6 +50,7 @@ function SearchInput({value, placeholder, onChange, onFocus, style}) {
                        type="search"
                        onChange={onChange}
                        onFocus={onFocus}
+                       onBlur={onBlur}
                        placeholder={placeholder}
                        inputProps={{ 'aria-label': 'search' }} />
         </div>

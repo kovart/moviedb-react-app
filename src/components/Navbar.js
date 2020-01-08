@@ -14,6 +14,9 @@ import {debounce} from "./utils/debounce"
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import Button from "@material-ui/core/Button"
+import SearchIcon from '@material-ui/icons/Search'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import {useTheme} from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
     menu: {
@@ -22,7 +25,16 @@ const useStyles = makeStyles(theme => ({
     brand: {
         textDecoration: 'none',
         color: 'inherit'
-    }
+    },
+    overlay: {
+        position: 'fixed',
+        width: '100%',
+        height: '100vh',
+        top: 0,
+        left: 0,
+        background: 'rgba(9, 9, 10, 0.6)',
+        zIndex: 1
+    },
 }))
 
 const CustomAppBar = withStyles({
@@ -33,7 +45,7 @@ const CustomAppBar = withStyles({
     }
 })(AppBar)
 
-const NavButton = withStyles(theme =>({
+const NavButton = withStyles(theme => ({
     root: {
         backgroundColor: 'rgba(0, 0, 0, 0.05)',
         marginRight: theme.spacing(1),
@@ -48,18 +60,22 @@ const NavButton = withStyles(theme =>({
 }))(Button)
 
 function Navbar(props) {
-    const {query, foundMovies, entities} = props
+    const theme = useTheme();
+    const {onMenu} = props
+    const {query, foundMovies, entities, location} = props
     const {changeQuery, searchMovies, cancelSearch} = props
     const classes = useStyles()
 
-    const [isOutputOpen, setIsOutputOpen] = useState(false)
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const [showMobileSearch, setShowMobileSearch] = useState(false)
+    const [showOutput, setShowOutput] = useState(false)
 
     // add 'genres' property
     const output = foundMovies.map(movie => ({...movie, genres: movie.genreIds.map(id => entities.genresById[id])}))
 
     const searchDebounce = useCallback(debounce(function (value) {
         searchMovies(value)
-        setIsOutputOpen(true)
+        setShowOutput(true)
     }, 600), [searchMovies])
 
     function handleSearchInput(e) {
@@ -70,15 +86,52 @@ function Navbar(props) {
         searchDebounce(value)
     }
 
+    // disable/enable scrolling of body element
     useEffect(function () {
-        bodyScrolling(!(isOutputOpen && foundMovies.length))
-    }, [isOutputOpen, foundMovies])
+        bodyScrolling(!(showOutput && foundMovies.length))
+    }, [showOutput, foundMovies])
 
-    return (
+    // hide output when location (page) has changed
+    useEffect(function () {
+        setShowOutput(false)
+    }, [location])
+
+    const mobileNavBar = () => (
         <React.Fragment>
+            {showOutput && <div className={classes.overlay} onClick={e => setShowOutput(false)}/>}
             <CustomAppBar position="sticky">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" className={classes.menu}>
+                    <IconButton onClick={onMenu} edge="start" color="inherit" aria-label="menu" className={classes.menu}>
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6" noWrap>
+                        <Link to="/" className={classes.brand}>Cinema App</Link>
+                    </Typography>
+                    <IconButton onClick={e => setShowMobileSearch(!showMobileSearch)} style={{marginLeft: 'auto'}}>
+                        <SearchIcon />
+                    </IconButton>
+                </Toolbar>
+                {showMobileSearch && <div style={{margin: '5px 15px 10px 15px'}}>
+                    <SearchInput
+                        value={query}
+                        style={{width: '100%', height: 50}}
+                        placeholder={"Search..."}
+                        onChange={handleSearchInput}
+                        onBlur={e => !query && setShowOutput(false) }
+                        onFocus={() => setShowOutput(true)}
+                    />
+                </div>}
+            </CustomAppBar>
+            {(!!output.length && showOutput) && <SearchOutput movies={output}/>}
+        </React.Fragment>
+    )
+
+    const desktopNavbar = () => (
+        <React.Fragment>
+            {showOutput && <div className={classes.overlay} onClick={e => setShowOutput(false)}/>}
+            <CustomAppBar position="sticky">
+                <Toolbar>
+                    <IconButton onClick={onMenu} edge="start" color="inherit" aria-label="menu" className={classes.menu}>
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap>
@@ -87,25 +140,29 @@ function Navbar(props) {
                     <SearchInput
                         value={query}
                         placeholder={"Search..."}
-                        style={{marginLeft: 30}}
+                        style={{marginLeft: 30, width: 250}}
                         onChange={handleSearchInput}
-                        onFocus={() => setIsOutputOpen(true)}
+                        onBlur={e => !query && setShowOutput(false) }
+                        onFocus={() => setShowOutput(true)}
                     />
                     <div style={{marginLeft: 'auto'}}>
                         <NavButton component={Link} to="/favorites" color="inherit">
-                            <FavoriteIcon style={{marginRight: 10, fill: "#f50057"}} />
+                            <FavoriteIcon style={{marginRight: 10, fill: "#f50057"}}/>
                             Favorites
                         </NavButton>
                         <NavButton component={Link} to="/visited" color="inherit">
-                            <VisibilityIcon style={{marginRight: 10, fill: '#115293'}} />
+                            <VisibilityIcon style={{marginRight: 10, fill: '#115293'}}/>
                             Visited
                         </NavButton>
                     </div>
                 </Toolbar>
             </CustomAppBar>
-            {(!!output.length && isOutputOpen) &&
-            <SearchOutput movies={output} onClose={e => setIsOutputOpen(false)}/>}
+            {(!!output.length && showOutput) && <SearchOutput movies={output}/>}
         </React.Fragment>
+    )
+
+    return (
+        isMobile ? mobileNavBar() : desktopNavbar()
     )
 }
 
@@ -116,7 +173,8 @@ function bodyScrolling(enabled) {
 function mapStateToProps(state) {
     return {
         ...state.search,
-        entities: state.entities
+        entities: state.entities,
+        location: state.router.location.pathname
     }
 }
 
