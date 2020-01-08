@@ -13,7 +13,7 @@ export function userReducer(state = initialState, action) {
             let favoriteMovieIds
             const isFavorite = state.favoriteMovieIds.indexOf(id) !== -1
             if(isFavorite) favoriteMovieIds = state.favoriteMovieIds.filter(movieId => movieId !== id)
-            else favoriteMovieIds = [...state.favoriteMovieIds, id]
+            else favoriteMovieIds = [id,...state.favoriteMovieIds]
             localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovieIds))
             return {...state, favoriteMovieIds: favoriteMovieIds}
         }
