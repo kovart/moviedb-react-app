@@ -1,4 +1,4 @@
-import {USER_CLEANED_VISITED_MOVIES, USER_FAVORITE_TOGGLE, USER_VISITED_MOVIE} from "./user.types"
+import {USER_CLEARED_VISITED_MOVIES, USER_FAVORITE_TOGGLE, USER_VISITED_MOVIE} from "./user.types"
 
 const initialState = {
     visitedMovieIds: JSON.parse(localStorage.getItem('visitedMovies')) || [],
@@ -23,7 +23,7 @@ export function userReducer(state = initialState, action) {
             localStorage.setItem('visitedMovies', JSON.stringify(visitedMovieIds))
             return {...state, visitedMovieIds: visitedMovieIds}
         }
-        case USER_CLEANED_VISITED_MOVIES: {
+        case USER_CLEARED_VISITED_MOVIES: {
             localStorage.setItem('visitedMovies', JSON.stringify([]))
             return {...state, visitedMovieIds: []}
         }

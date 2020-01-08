@@ -9,7 +9,7 @@ import {getMovie} from "../store/utils"
 import LazyLoad from "react-lazyload"
 import MovieCardFetch from "./MovieCardFetch"
 import {fetchMovie} from "../store/domains/entities/entities.actions"
-import {cleanVisitedMovies, toggleFavorite} from "../store/domains/user/user.actions"
+import {clearVisitedMovies, toggleFavorite} from "../store/domains/user/user.actions"
 
 function Visited({isAppReady, visitedMovieIds, entities, user, fetchMovie, toggleFavorite, cleanVisitedMovies}) {
     return (
@@ -18,7 +18,7 @@ function Visited({isAppReady, visitedMovieIds, entities, user, fetchMovie, toggl
                 <Typography component="h2" variant="h4">
                     Visited movies
                 </Typography>
-                <Button onClick={cleanVisitedMovies} style={{marginLeft: 'auto'}} variant="outlined" disabled={!visitedMovieIds.length}>Clean history</Button>
+                <Button onClick={cleanVisitedMovies} style={{marginLeft: 'auto'}} variant="outlined" disabled={!visitedMovieIds.length}>Clear history</Button>
             </div>
             {!visitedMovieIds.length && (
                 <EmptyBlock text="You haven't marked favorite movies yet"/>
@@ -60,7 +60,7 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchMovie: (id) => dispatch(fetchMovie(id)),
         toggleFavorite: (id) => dispatch(toggleFavorite(id)),
-        cleanVisitedMovies: () => dispatch(cleanVisitedMovies())
+        cleanVisitedMovies: () => dispatch(clearVisitedMovies())
     }
 }
 

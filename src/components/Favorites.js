@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid"
 import EmptyBlock from "./placeholders/EmptyBlock"
 import {fetchMovie} from "../store/domains/entities/entities.actions"
 import {getMovie} from "../store/utils"
-import {cleanVisitedMovies, toggleFavorite} from "../store/domains/user/user.actions"
+import {toggleFavorite} from "../store/domains/user/user.actions"
 import MovieCardFetch from "./MovieCardFetch"
 
 function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavorite}) {
