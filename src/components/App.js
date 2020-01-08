@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {connect} from "react-redux"
 import {Switch, Route} from "react-router-dom"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -12,20 +12,27 @@ import Movie from "./Movie"
 import Page404 from "./Page404"
 import Favorites from "./Favorites"
 import Visited from "./Visited"
+import Sidebar from "./Sidebar"
 
 function App(props) {
-    const {isLoading, fetchGenres} = props
+    const {isLoading, location, fetchGenres} = props
+    const [showSidebar, setShowSidebar] = useState(false)
 
     useEffect(function () {
         fetchGenres()
     }, [fetchGenres])
+
+    useEffect(function () {
+        setShowSidebar(false)
+    }, [location])
 
     return (
         <SnackbarProvider autoHideDuration={30 * 1000}>
             <CssBaseline/>
             <Notifier/>
             {isLoading && <LinearProgress style={{position: 'fixed', top: 0, width: '100%', zIndex: 9999}}/>}
-            <Navbar/>
+            <Navbar onMenu={() => setShowSidebar(!showSidebar)}/>
+            <Sidebar open={showSidebar} onClose={() => setShowSidebar(!showSidebar)} />
             <Switch>
                 <Route exact path="/" component={Home}/>
                 <Route path="/movie/:id" component={Movie}/>
@@ -40,7 +47,8 @@ function App(props) {
 function mapStateToProps(state) {
     return {
         isLoading: !state.common.isGenresLoaded || state.search.isFetching || state.movie.isFetching,
-        errors: state.ui.errors
+        errors: state.ui.errors,
+        location: state.router.location.pathname
     }
 }
 
