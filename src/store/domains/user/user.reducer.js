@@ -1,4 +1,4 @@
-import {MOVIE_FAVORITE_TOGGLED, MOVIE_FAVORITED, MOVIE_UNFAVORITED, MOVIE_VISITED} from "./user.types"
+import {USER_CLEANED_VISITED_MOVIES, USER_FAVORITE_TOGGLE, USER_VISITED_MOVIE} from "./user.types"
 
 const initialState = {
     visitedMovieIds: JSON.parse(localStorage.getItem('visitedMovies')) || [],
@@ -8,7 +8,7 @@ const initialState = {
 export function userReducer(state = initialState, action) {
     const {type, payload} = action
     switch (type) {
-        case MOVIE_FAVORITE_TOGGLED: {
+        case USER_FAVORITE_TOGGLE: {
             const id = payload.id
             let favoriteMovieIds
             const isFavorite = state.favoriteMovieIds.indexOf(id) !== -1
@@ -17,23 +17,15 @@ export function userReducer(state = initialState, action) {
             localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovieIds))
             return {...state, favoriteMovieIds: favoriteMovieIds}
         }
-        case MOVIE_FAVORITED: {
+        case USER_VISITED_MOVIE: {
             const id = payload.id
-            const favoriteMovieIds = [...state.favoriteMovieIds, id]
-            localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovieIds))
-            return {...state, favoriteMovieIds: favoriteMovieIds}
-        }
-        case MOVIE_UNFAVORITED: {
-            const id = payload.id
-            const favoriteMovieIds = state.favoriteMovieIds.filter(movieId => movieId !== id)
-            localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovieIds))
-            return {...state, favoriteMovieIds: favoriteMovieIds}
-        }
-        case MOVIE_VISITED: {
-            const id = payload.id
-            const visitedMovieIds = [...state.visitedMovieIds, id]
+            const visitedMovieIds = [...new Set([id, ...state.visitedMovieIds])]
             localStorage.setItem('visitedMovies', JSON.stringify(visitedMovieIds))
             return {...state, visitedMovieIds: visitedMovieIds}
+        }
+        case USER_CLEANED_VISITED_MOVIES: {
+            localStorage.setItem('visitedMovies', JSON.stringify([]))
+            return {...state, visitedMovieIds: []}
         }
         default:
             return state

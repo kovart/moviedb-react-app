@@ -13,7 +13,7 @@ import MovieBrowser from "./MovieBrowser"
 import MoviePagePlaceholder from "./placeholders/MoviePagePlaceholder"
 import FavoriteIcon from "@material-ui/icons/Favorite"
 import Button from "@material-ui/core/Button"
-import {toggleFavorite} from "../store/domains/user/user.actions"
+import {makeMovieVisited, toggleFavorite} from "../store/domains/user/user.actions"
 import {Formatter} from "./utils/formatter"
 import EmptyBlock from "./placeholders/EmptyBlock"
 
@@ -23,13 +23,18 @@ function Movie(props) {
         isAppReady,
         movie,
         fetchMovie,
-        toggleFavorite
+        toggleFavorite,
+        makeMovieVisited,
     } = props
 
     useEffect(function () {
         fetchMovie(urlId)
         window.scrollTo({top: 0, left: 0})
     }, [urlId, fetchMovie])
+
+    useEffect(function () {
+        if(movie.isFetched) makeMovieVisited(movie.id)
+    }, [movie.id, makeMovieVisited])
 
     return (
         <React.Fragment>
@@ -298,7 +303,8 @@ function mapDispatchToProps(dispatch) {
         fetchMovie: (id) => dispatch(fetchMoviePage(id)),
         fetchSimilarMovies: (id) => dispatch(fetchSimilarMovies(id)),
         fetchRecommendedMovies: (id) => dispatch(fetchRecommendedMovies(id)),
-        toggleFavorite: (id) => dispatch(toggleFavorite(id))
+        toggleFavorite: (id) => dispatch(toggleFavorite(id)),
+        makeMovieVisited: (id) => dispatch(makeMovieVisited(id))
     }
 }
 

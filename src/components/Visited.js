@@ -1,28 +1,31 @@
 import React from 'react'
-import LazyLoad from 'react-lazyload'
 import {connect} from "react-redux"
+import {Container} from "@material-ui/core"
 import Typography from "@material-ui/core/Typography"
-import Container from "@material-ui/core/Container"
-import Grid from "@material-ui/core/Grid"
 import EmptyBlock from "./placeholders/EmptyBlock"
-import {fetchMovie} from "../store/domains/entities/entities.actions"
+import Button from "@material-ui/core/Button"
+import Grid from "@material-ui/core/Grid"
 import {getMovie} from "../store/utils"
-import {cleanVisitedMovies, toggleFavorite} from "../store/domains/user/user.actions"
+import LazyLoad from "react-lazyload"
 import MovieCardFetch from "./MovieCardFetch"
+import {fetchMovie} from "../store/domains/entities/entities.actions"
+import {cleanVisitedMovies, toggleFavorite} from "../store/domains/user/user.actions"
 
-function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavorite}) {
-
+function Visited({isAppReady, visitedMovieIds, entities, user, fetchMovie, toggleFavorite, cleanVisitedMovies}) {
     return (
         <Container style={{margin: '20px auto'}}>
-            <Typography component="h2" variant="h4" style={{margin: '40px 0'}}>
-                Favorite movies
-            </Typography>
-            {!movieIds.length && (
+            <div style={{display: 'flex', margin: '40px 0'}} >
+                <Typography component="h2" variant="h4">
+                    Visited movies
+                </Typography>
+                <Button onClick={cleanVisitedMovies} style={{marginLeft: 'auto'}} variant="outlined" disabled={!visitedMovieIds.length}>Clean history</Button>
+            </div>
+            {!visitedMovieIds.length && (
                 <EmptyBlock text="You haven't marked favorite movies yet"/>
             )}
-            {!!movieIds.length && (
+            {!!visitedMovieIds.length && (
                 <Grid container spacing={2}>
-                    {movieIds.map(id => {
+                    {visitedMovieIds.map(id => {
                         const movie = getMovie(id, entities, user)
                         return (
                             <LazyLoad minheight={400} key={id} once>
@@ -44,10 +47,10 @@ function Favorites({isAppReady, movieIds, entities, user, fetchMovie, toggleFavo
     )
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
     return {
         isAppReady: state.common.isAppReady,
-        movieIds: state.user.favoriteMovieIds,
+        visitedMovieIds: state.user.visitedMovieIds,
         entities: state.entities,
         user: state.user
     }
@@ -56,8 +59,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         fetchMovie: (id) => dispatch(fetchMovie(id)),
-        toggleFavorite: (id) => dispatch(toggleFavorite(id))
+        toggleFavorite: (id) => dispatch(toggleFavorite(id)),
+        cleanVisitedMovies: () => dispatch(cleanVisitedMovies())
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Favorites)
+export default connect(mapStateToProps, mapDispatchToProps)(Visited)

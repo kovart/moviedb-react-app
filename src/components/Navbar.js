@@ -96,7 +96,7 @@ function Navbar(props) {
                             <FavoriteIcon style={{marginRight: 10, fill: "#f50057"}} />
                             Favorites
                         </NavButton>
-                        <NavButton component={Link} color="inherit">
+                        <NavButton component={Link} to="/visited" color="inherit">
                             <VisibilityIcon style={{marginRight: 10, fill: '#115293'}} />
                             Visited
                         </NavButton>
